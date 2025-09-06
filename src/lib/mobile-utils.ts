@@ -103,8 +103,8 @@ export function getSafeAreaInsets() {
 export function optimizeScrollPerformance(element: HTMLElement) {
   if (!isMobileDevice()) return
   
-  element.style.webkitOverflowScrolling = 'touch'
-  element.style.overflowScrolling = 'touch'
+  ;(element.style as any).webkitOverflowScrolling = 'touch'
+  ;(element.style as any).overflowScrolling = 'touch'
 }
 
 // Handle orientation change

@@ -35,9 +35,10 @@ export function withErrorHandler<T extends any[]>(
         return NextResponse.json(
           createErrorResponse(
             400,
-            'VALIDATION_ERROR',
             'Invalid data format',
             'The provided data does not match the expected format',
+            'https://freelancian.com/errors/validation-error',
+            '',
             undefined,
             requestId
           ),
@@ -49,9 +50,10 @@ export function withErrorHandler<T extends any[]>(
         return NextResponse.json(
           createErrorResponse(
             503,
-            'DATABASE_CONNECTION_ERROR',
             'Database Connection Failed',
             'Unable to connect to the database. Please try again later.',
+            'https://freelancian.com/errors/database-connection-error',
+            '',
             undefined,
             requestId
           ),
@@ -64,9 +66,10 @@ export function withErrorHandler<T extends any[]>(
         return NextResponse.json(
           createErrorResponse(
             error.statusCode,
-            error.code,
             error.title,
             error.message,
+            `https://freelancian.com/errors/${error.code.toLowerCase()}`,
+            '',
             error.details,
             requestId
           ),

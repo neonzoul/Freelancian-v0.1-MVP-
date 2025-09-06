@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
 import { ToastProvider } from '@/components/ui/Toast'
 import { ErrorBoundary } from '@/components/error/ErrorBoundary'
+import { AccessibilityProvider } from '@/components/providers/AccessibilityProvider'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -36,9 +37,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary onError={handleGlobalError}>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <AccessibilityProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </AccessibilityProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   )

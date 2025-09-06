@@ -33,6 +33,128 @@
   /* Better focus styles for keyboard navigation */
   *:focus-visible {
     @apply outline-2 outline-offset-2 outline-primary-500;
+    outline-style: solid;
+  }
+  
+  /* High contrast focus indicators */
+  .high-contrast *:focus-visible {
+    @apply outline-4 outline-offset-4 outline-yellow-400;
+    outline-style: solid;
+  }
+  
+  /* Focus indicators for interactive elements */
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply ring-2 ring-primary-500 ring-offset-2;
+  }
+  
+  /* Enhanced focus for high contrast mode */
+  .high-contrast button:focus-visible,
+  .high-contrast [role="button"]:focus-visible,
+  .high-contrast a:focus-visible,
+  .high-contrast input:focus-visible,
+  .high-contrast select:focus-visible,
+  .high-contrast textarea:focus-visible {
+    @apply ring-4 ring-yellow-400 ring-offset-4;
+    outline: 3px solid yellow;
+  }
+  
+  /* Screen reader only content */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+  
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    @apply absolute -top-10 left-4 z-50 bg-primary-600 text-white px-4 py-2 rounded-md;
+    @apply focus:top-4 transition-all duration-200;
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --tw-ring-opacity: 1;
+    }
+    
+    .card {
+      @apply border-2 border-neutral-800;
+    }
+    
+    button {
+      @apply border-2 border-current;
+    }
+  }
+  
+  /* Forced colors mode (Windows High Contrast) */
+  @media (forced-colors: active) {
+    .card {
+      border: 2px solid ButtonText;
+      background: ButtonFace;
+    }
+    
+    button {
+      border: 2px solid ButtonText;
+      background: ButtonFace;
+      color: ButtonText;
+    }
+    
+    button:hover,
+    button:focus {
+      background: Highlight;
+      color: HighlightText;
+      border-color: HighlightText;
+    }
+    
+    button:disabled {
+      background: ButtonFace;
+      color: GrayText;
+      border-color: GrayText;
+    }
+    
+    input,
+    select,
+    textarea {
+      border: 2px solid ButtonText;
+      background: Field;
+      color: FieldText;
+    }
+    
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: Highlight;
+      outline: 2px solid Highlight;
+    }
+    
+    a {
+      color: LinkText;
+    }
+    
+    a:visited {
+      color: VisitedText;
+    }
+    
+    a:hover,
+    a:focus {
+      color: Highlight;
+      background: HighlightText;
+    }
   }
 }
 
@@ -106,6 +228,51 @@
     -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
   }
   
+  /* Focus management for modals and overlays */
+  .focus-trap {
+    position: relative;
+  }
+  
+  .focus-trap::before,
+  .focus-trap::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Ensure interactive elements are large enough */
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Better visibility for focus indicators on dark backgrounds */
+  .dark *:focus-visible {
+    @apply outline-white;
+  }
+  
+  /* Improve text selection */
+  ::selection {
+    @apply bg-primary-200 text-primary-900;
+  }
+  
+  /* Better contrast for placeholder text */
+  ::placeholder {
+    @apply text-neutral-500;
+    opacity: 1;
+  }
+  
+  .high-contrast ::placeholder {
+    @apply text-neutral-700;
+  }
+  
   /* Improve form controls on mobile */
   @media (max-width: 640px) {
     select,
@@ -125,5 +292,166 @@
       font-size: 16px !important;
       border-radius: 8px;
     }
+  }
+  
+  /* Accessibility utilities */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+  
+  .visually-hidden-focusable:focus,
+  .visually-hidden-focusable:active {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: inherit !important;
+    margin: inherit !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: inherit !important;
+  }
+  
+  /* Announce to screen readers only */
+  .sr-announce {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  
+  /* Focus trap indicators */
+  .focus-trap-start,
+  .focus-trap-end {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Reduced motion utilities */
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* High contrast mode enhancements */
+  .high-contrast {
+    --tw-ring-opacity: 1;
+  }
+  
+  .high-contrast .card {
+    @apply border-2 border-neutral-800;
+  }
+  
+  .high-contrast button {
+    @apply border-2 border-current;
+  }
+  
+  .high-contrast input,
+  .high-contrast select,
+  .high-contrast textarea {
+    @apply border-2 border-neutral-700;
+  }
+  
+  /* Error state enhancements for accessibility */
+  .error-state {
+    @apply border-error-500 ring-2 ring-error-500/20;
+  }
+  
+  .high-contrast .error-state {
+    @apply border-4 border-red-600 ring-4 ring-red-600/50;
+  }
+  
+  /* Success state enhancements */
+  .success-state {
+    @apply border-success-500 ring-2 ring-success-500/20;
+  }
+  
+  .high-contrast .success-state {
+    @apply border-4 border-green-600 ring-4 ring-green-600/50;
+  }
+  
+  /* Font size accessibility settings */
+  .font-small {
+    font-size: 14px;
+  }
+  
+  .font-small h1 { font-size: 1.75rem; }
+  .font-small h2 { font-size: 1.5rem; }
+  .font-small h3 { font-size: 1.25rem; }
+  .font-small h4 { font-size: 1.125rem; }
+  .font-small h5 { font-size: 1rem; }
+  .font-small h6 { font-size: 0.875rem; }
+  
+  .font-medium {
+    font-size: 16px;
+  }
+  
+  .font-medium h1 { font-size: 2rem; }
+  .font-medium h2 { font-size: 1.75rem; }
+  .font-medium h3 { font-size: 1.5rem; }
+  .font-medium h4 { font-size: 1.25rem; }
+  .font-medium h5 { font-size: 1.125rem; }
+  .font-medium h6 { font-size: 1rem; }
+  
+  .font-large {
+    font-size: 18px;
+  }
+  
+  .font-large h1 { font-size: 2.25rem; }
+  .font-large h2 { font-size: 2rem; }
+  .font-large h3 { font-size: 1.75rem; }
+  .font-large h4 { font-size: 1.5rem; }
+  .font-large h5 { font-size: 1.25rem; }
+  .font-large h6 { font-size: 1.125rem; }
+  
+  .font-extra-large {
+    font-size: 20px;
+  }
+  
+  .font-extra-large h1 { font-size: 2.5rem; }
+  .font-extra-large h2 { font-size: 2.25rem; }
+  .font-extra-large h3 { font-size: 2rem; }
+  .font-extra-large h4 { font-size: 1.75rem; }
+  .font-extra-large h5 { font-size: 1.5rem; }
+  .font-extra-large h6 { font-size: 1.25rem; }
+  
+  /* Color scheme support */
+  .light-mode {
+    color-scheme: light;
+  }
+  
+  .dark-mode {
+    color-scheme: dark;
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+  
+  .dark-mode .card {
+    @apply bg-neutral-800 border-neutral-700;
+  }
+  
+  .dark-mode button {
+    @apply text-white;
+  }
+  
+  .dark-mode input,
+  .dark-mode select,
+  .dark-mode textarea {
+    @apply bg-neutral-800 border-neutral-600 text-white;
   }
 }

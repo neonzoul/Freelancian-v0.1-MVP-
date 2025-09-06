@@ -279,8 +279,32 @@ export const reducedMotionVariants = {
   exit: { opacity: 0 }
 }
 
+// Create accessible animation variants that respect reduced motion
+export function createAccessibleVariants(
+  normalVariants: Variants,
+  reducedVariants: Variants = reducedMotionVariants
+): Variants {
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return reducedVariants
+  }
+  return normalVariants
+}
+
 // Hook to check for reduced motion preference
 export function useReducedMotion() {
   if (typeof window === 'undefined') return false
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
+
+// Accessible versions of common animations
+export const accessibleFadeInUp = (prefersReducedMotion: boolean): Variants => 
+  prefersReducedMotion ? reducedMotionVariants : fadeInUp
+
+export const accessibleScaleIn = (prefersReducedMotion: boolean): Variants => 
+  prefersReducedMotion ? reducedMotionVariants : scaleIn
+
+export const accessibleCardHover = (prefersReducedMotion: boolean): Variants => 
+  prefersReducedMotion ? { initial: { scale: 1 }, hover: { scale: 1 } } : cardHover
+
+export const accessibleButtonPress = (prefersReducedMotion: boolean): Variants => 
+  prefersReducedMotion ? { initial: { scale: 1 }, hover: { scale: 1 }, tap: { scale: 1 } } : buttonPress

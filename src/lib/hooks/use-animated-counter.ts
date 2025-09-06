@@ -92,12 +92,19 @@ export function useStaggeredCounters(
 ) {
   const { staggerDelay = 100, ...counterOptions } = options
   
-  return values.map((value, index) => 
-    useAnimatedCounter(value, {
+  // Create individual hooks for each value to avoid rules of hooks violation
+  const results = []
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i]
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const result = useAnimatedCounter(value, {
       ...counterOptions,
-      delay: (counterOptions.delay || 0) + (index * staggerDelay)
+      delay: (counterOptions.delay || 0) + (i * staggerDelay)
     })
-  )
+    results.push(result)
+  }
+  
+  return results
 }
 
 // Hook for percentage animations

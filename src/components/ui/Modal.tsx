@@ -4,7 +4,9 @@ import { Fragment, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { clsx } from 'clsx'
-import { modalBackdrop, modalContent } from '@/lib/animations'
+import { modalBackdrop, modalContent, accessibleScaleIn } from '@/lib/animations'
+import { useAccessibility } from '@/components/providers/AccessibilityProvider'
+import { useFocusTrap, useFocusRestore } from '@/lib/accessibility'
 
 interface ModalProps {
   isOpen: boolean
@@ -28,7 +30,11 @@ export function Modal({
   className,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
-  const previousActiveElement = useRef<HTMLElement | null>(null)
+  const { prefersReducedMotion, announceMessage } = useAccessibility()
+  const { saveFocus, restoreFocus } = useFocusRestore()
+  
+  // Use focus trap when modal is open
+  useFocusTrap(isOpen)
 
   // Handle escape key
   useEffect(() => {
@@ -49,11 +55,11 @@ export function Modal({
     }
   }, [isOpen, onClose, closeOnEscape])
 
-  // Handle focus management
+  // Handle focus management and announcements
   useEffect(() => {
     if (isOpen) {
-      // Store the currently focused element
-      previousActiveElement.current = document.activeElement as HTMLElement
+      // Save current focus
+      saveFocus()
       
       // Focus the modal
       setTimeout(() => {
@@ -62,20 +68,28 @@ export function Modal({
       
       // Prevent body scroll
       document.body.style.overflow = 'hidden'
-    } else {
-      // Restore focus to the previously focused element
-      if (previousActiveElement.current) {
-        previousActiveElement.current.focus()
+      
+      // Announce modal opening to screen readers
+      if (title) {
+        announceMessage(`${title} dialog opened`, 'assertive')
+      } else {
+        announceMessage('Dialog opened', 'assertive')
       }
+    } else {
+      // Restore focus
+      restoreFocus()
       
       // Restore body scroll
       document.body.style.overflow = 'unset'
+      
+      // Announce modal closing
+      announceMessage('Dialog closed', 'polite')
     }
 
     return () => {
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen])
+  }, [isOpen, title, saveFocus, restoreFocus, announceMessage])
 
   // Handle focus trap
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -136,7 +150,7 @@ export function Modal({
           
           {/* Modal */}
           <motion.div
-            variants={modalContent}
+            variants={accessibleScaleIn(prefersReducedMotion)}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -149,6 +163,7 @@ export function Modal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
+            aria-describedby="modal-content"
             tabIndex={-1}
             onKeyDown={handleKeyDown}
           >
@@ -183,10 +198,11 @@ export function Modal({
             
             {/* Content */}
             <motion.div 
+              id="modal-content"
               className={clsx('p-6', title && 'pt-4')}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
+              initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+              transition={prefersReducedMotion ? {} : { delay: 0.15 }}
             >
               {children}
             </motion.div>

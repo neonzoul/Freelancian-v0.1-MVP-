@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/Card'
 import { useAnimatedCurrency } from '@/lib/hooks/use-animated-counter'
+import { useAccessibility } from '@/components/providers/AccessibilityProvider'
 import { clsx } from 'clsx'
 
 interface MetricsCardProps {
@@ -24,9 +25,10 @@ export function MetricsCard({
   isLoading = false,
   className 
 }: MetricsCardProps) {
+  const { prefersReducedMotion } = useAccessibility()
   const { formattedValue, isAnimating } = useAnimatedCurrency(value, {
-    duration: 1200,
-    delay: 200
+    duration: prefersReducedMotion ? 0 : 1200,
+    delay: prefersReducedMotion ? 0 : 200
   })
   
   const variantStyles = {
@@ -54,47 +56,52 @@ export function MetricsCard({
   
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+      transition={prefersReducedMotion ? {} : { duration: 0.5, ease: 'easeOut' }}
       className={className}
     >
       <Card 
-        hover 
+        hover={!prefersReducedMotion} 
         variant="elevated" 
         className={clsx(
           'relative overflow-hidden border-l-4 transition-all duration-300',
           styles.accentColor
         )}
+        aria-label={`${title}: ${formattedValue}`}
+        role="region"
       >
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-xs sm:text-sm font-medium text-neutral-600 mb-1">
+              <p className="text-xs sm:text-sm font-medium text-neutral-600 mb-1" id={`metric-${variant}-title`}>
                 {title}
               </p>
               
               {isLoading ? (
                 <motion.div 
                   className="h-8 bg-neutral-200 rounded mb-2"
-                  animate={{
+                  animate={prefersReducedMotion ? {} : {
                     opacity: [0.5, 1, 0.5],
                   }}
-                  transition={{
+                  transition={prefersReducedMotion ? {} : {
                     duration: 1.5,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
+                  aria-label="Loading metric value"
                 />
               ) : (
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.4, type: 'spring' }}
+                  initial={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0 }}
+                  animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1 }}
+                  transition={prefersReducedMotion ? {} : { delay: 0.2, duration: 0.4, type: 'spring' }}
                   className={clsx(
                     'text-xl sm:text-2xl font-bold mb-2',
                     styles.valueColor
                   )}
+                  aria-labelledby={`metric-${variant}-title`}
+                  aria-live="polite"
                 >
                   {formattedValue}
                 </motion.div>
@@ -106,13 +113,14 @@ export function MetricsCard({
             </div>
             
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.3, duration: 0.5, type: 'spring' }}
+              initial={prefersReducedMotion ? {} : { scale: 0, rotate: -180 }}
+              animate={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
+              transition={prefersReducedMotion ? {} : { delay: 0.3, duration: 0.5, type: 'spring' }}
               className={clsx(
                 'w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center',
                 styles.iconBg
               )}
+              aria-hidden="true"
             >
               <div className={clsx('w-5 h-5 sm:w-6 sm:h-6', styles.iconColor)}>
                 {icon}

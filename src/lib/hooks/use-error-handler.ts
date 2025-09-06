@@ -120,7 +120,7 @@ function extractErrorInfo(error: unknown, fallbackMessage: string): ErrorInfo {
   if (isApiErrorResponse(error)) {
     return {
       title: error.error.title || 'API Error',
-      message: error.error.detail || error.error.message || fallbackMessage,
+      message: error.error.detail || fallbackMessage,
       type: error.error.status >= 500 ? 'error' : 'warning',
       code: error.error.type,
       details: error.error.errors

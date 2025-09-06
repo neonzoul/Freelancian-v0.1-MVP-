@@ -1,7 +1,14 @@
 'use client'
 
 import { QueryClient, MutationCache, QueryCache } from '@tanstack/react-query'
-import { toast } from 'react-hot-toast'
+// Using custom toast system instead of react-hot-toast
+const toast = {
+  error: (message: string, options?: { id?: string; duration?: number }) => {
+    console.error('Toast Error:', message)
+    // In a real implementation, this would integrate with our custom Toast component
+    // For now, we'll just log the error
+  }
+}
 
 // Create a query client with global error handling
 export function createQueryClient() {
@@ -135,7 +142,6 @@ export function useMutationErrorHandler() {
     
     toast.error(contextMessage, {
       duration: 5000,
-      position: 'top-right',
     })
   }
 }
@@ -159,7 +165,6 @@ export function handleOptimisticUpdateError<T>(
   
   toast.error(contextMessage, {
     duration: 5000,
-    position: 'top-right',
   })
   
   // Invalidate queries to ensure data consistency

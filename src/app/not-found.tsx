@@ -58,7 +58,7 @@ export default function NotFound() {
             Page Not Found
           </h1>
           <p className="text-lg text-neutral-600 mb-2">
-            Oops! The page you're looking for doesn't exist.
+            Oops! The page you&apos;re looking for doesn&apos;t exist.
           </p>
           <p className="text-neutral-500">
             It might have been moved, deleted, or you entered the wrong URL.
@@ -70,8 +70,8 @@ export default function NotFound() {
           variants={fadeInUp}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button asChild variant="primary" size="lg">
-            <Link href="/">
+          <Link href="/">
+            <Button variant="primary" size="lg">
               <svg 
                 className="w-5 h-5 mr-2" 
                 fill="none" 
@@ -86,11 +86,11 @@ export default function NotFound() {
                 />
               </svg>
               Go Home
-            </Link>
-          </Button>
+            </Button>
+          </Link>
           
-          <Button asChild variant="outline" size="lg">
-            <Link href="/entries">
+          <Link href="/entries">
+            <Button variant="outline" size="lg">
               <svg 
                 className="w-5 h-5 mr-2" 
                 fill="none" 
@@ -105,8 +105,8 @@ export default function NotFound() {
                 />
               </svg>
               View Entries
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </motion.div>
 
         {/* Help Links */}

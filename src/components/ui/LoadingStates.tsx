@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils'
 interface SkeletonProps {
   className?: string
   animate?: boolean
+  style?: React.CSSProperties
 }
 
-export function Skeleton({ className, animate = true }: SkeletonProps) {
+export function Skeleton({ className, animate = true, style }: SkeletonProps) {
   return (
     <div
       className={cn(
@@ -17,6 +18,7 @@ export function Skeleton({ className, animate = true }: SkeletonProps) {
         animate && 'animate-pulse',
         className
       )}
+      style={style}
     />
   )
 }

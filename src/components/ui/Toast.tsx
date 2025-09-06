@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { clsx } from 'clsx'
-import { slideInRight, fadeInUp } from '@/lib/animations'
+import { fadeInRight, fadeInUp } from '@/lib/animations'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 

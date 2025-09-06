@@ -64,7 +64,7 @@ export function MobileNavigation() {
   const router = useRouter()
 
   const handleNavigation = (href: string) => {
-    router.push(href)
+    router.push(href as any)
   }
 
   return (

@@ -146,6 +146,7 @@ export default function DashboardPage() {
       subtitle="Welcome back! Here's your financial overview for this month."
       actions={dashboardActions}
     >
+      <div id="main-content" role="main" aria-label="Dashboard content">
 
         {/* Error States */}
         {(metricsError || entriesError) && (
@@ -189,40 +190,44 @@ export default function DashboardPage() {
         )}
 
         {/* Metrics Cards */}
-        {metricsLoading ? (
-          <MetricsSkeleton />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <MetricsCard
-              title="Total Income"
-              value={(metrics as DashboardMetrics)?.totalIncome || 0}
-              icon={<IncomeIcon />}
-              variant="income"
-              isLoading={metricsLoading}
-            />
-            
-            <MetricsCard
-              title="Total Expenses"
-              value={(metrics as DashboardMetrics)?.totalExpenses || 0}
-              icon={<ExpenseIcon />}
-              variant="expense"
-              isLoading={metricsLoading}
-            />
-            
-            <MetricsCard
-              title="Net Amount"
-              value={(metrics as DashboardMetrics)?.netAmount || 0}
-              icon={<NetIcon />}
-              variant="net"
-              isLoading={metricsLoading}
-            />
-          </div>
-        )}
+        <section aria-labelledby="metrics-heading" className="mb-6 sm:mb-8">
+          <h2 id="metrics-heading" className="sr-only">Financial Metrics</h2>
+          {metricsLoading ? (
+            <MetricsSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <MetricsCard
+                title="Total Income"
+                value={(metrics as DashboardMetrics)?.totalIncome || 0}
+                icon={<IncomeIcon />}
+                variant="income"
+                isLoading={metricsLoading}
+              />
+              
+              <MetricsCard
+                title="Total Expenses"
+                value={(metrics as DashboardMetrics)?.totalExpenses || 0}
+                icon={<ExpenseIcon />}
+                variant="expense"
+                isLoading={metricsLoading}
+              />
+              
+              <MetricsCard
+                title="Net Amount"
+                value={(metrics as DashboardMetrics)?.netAmount || 0}
+                icon={<NetIcon />}
+                variant="net"
+                isLoading={metricsLoading}
+              />
+            </div>
+          )}
+        </section>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Entries - Takes 2 columns on large screens */}
-          <div className="lg:col-span-2">
+          <section aria-labelledby="recent-entries-heading" className="lg:col-span-2">
+            <h2 id="recent-entries-heading" className="sr-only">Recent Entries</h2>
             <ErrorBoundary
               fallback={
                 <div className="bg-white rounded-xl p-6 shadow-soft">
@@ -256,10 +261,11 @@ export default function DashboardPage() {
                 />
               )}
             </ErrorBoundary>
-          </div>
+          </section>
 
           {/* Mini Chart - Takes 1 column on large screens */}
-          <div className="lg:col-span-1">
+          <section aria-labelledby="chart-heading" className="lg:col-span-1">
+            <h2 id="chart-heading" className="sr-only">Financial Chart</h2>
             <ErrorBoundary
               fallback={
                 <div className="bg-white rounded-xl p-6 shadow-soft">
@@ -289,8 +295,9 @@ export default function DashboardPage() {
                 isLoading={metricsLoading}
               />
             </ErrorBoundary>
-          </div>
+          </section>
         </div>
+      </div>
     </PageWrapper>
   )
 }

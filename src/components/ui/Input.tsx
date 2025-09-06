@@ -1,5 +1,6 @@
 import { InputHTMLAttributes, forwardRef, useState } from 'react'
 import { clsx } from 'clsx'
+import { useId } from '@/lib/accessibility'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string
@@ -9,6 +10,8 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
   variant?: 'default' | 'filled'
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
+  required?: boolean
+  'aria-describedby'?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -23,9 +26,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     rightIcon,
     type = 'text',
     disabled,
+    required,
+    id,
     ...props 
   }, ref) => {
     const [focused, setFocused] = useState(false)
+    const generatedId = useId('input')
+    const inputId = id || generatedId
 
     const inputClasses = clsx(
       'w-full rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 touch-manipulation',
@@ -64,12 +71,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className={clsx(
-            'block text-sm font-medium mb-2 transition-colors duration-200',
-            error ? 'text-error-700' : 'text-neutral-700',
-            disabled && 'text-neutral-500'
-          )}>
+          <label 
+            htmlFor={inputId}
+            className={clsx(
+              'block text-sm font-medium mb-2 transition-colors duration-200',
+              error ? 'text-error-700' : 'text-neutral-700',
+              disabled && 'text-neutral-500'
+            )}
+          >
             {label}
+            {required && (
+              <span className="text-error-500 ml-1" aria-label="required">
+                *
+              </span>
+            )}
           </label>
         )}
         
@@ -89,9 +104,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           
           <input
             ref={ref}
+            id={inputId}
             type={type}
             className={inputClasses}
             disabled={disabled}
+            required={required}
             onFocus={(e) => {
               setFocused(true)
               props.onFocus?.(e)
@@ -101,7 +118,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               props.onBlur?.(e)
             }}
             aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
+            aria-required={required}
+            aria-describedby={
+              [
+                error ? `${inputId}-error` : null,
+                helperText ? `${inputId}-helper` : null,
+                props['aria-describedby']
+              ].filter(Boolean).join(' ') || undefined
+            }
             {...props}
           />
           
@@ -122,15 +146,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {(error || helperText) && (
           <div className="mt-2">
             {error && (
-              <p id={`${props.id}-error`} className="text-sm text-error-600 flex items-center gap-1">
-                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <p id={`${inputId}-error`} className="text-sm text-error-600 flex items-center gap-1" role="alert">
+                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 {error}
               </p>
             )}
             {!error && helperText && (
-              <p id={`${props.id}-helper`} className="text-sm text-neutral-500">
+              <p id={`${inputId}-helper`} className="text-sm text-neutral-500">
                 {helperText}
               </p>
             )}
