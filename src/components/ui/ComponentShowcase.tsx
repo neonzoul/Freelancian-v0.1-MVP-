@@ -11,14 +11,17 @@ import {
   NumberInput,
   DateInput,
   Select,
+  Textarea,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  useToast,
   ConfirmDialog,
-  useConfirmDialog,
+  Pagination,
+  LoadingSpinner,
+  EmptyState,
 } from './index'
+import { toast } from 'sonner'
 
 export function ComponentShowcase() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -31,8 +34,7 @@ export function ComponentShowcase() {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   
-  const toast = useToast()
-  const { confirm, ConfirmDialog: ConfirmDialogComponent } = useConfirmDialog()
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
   const entryTypes = [
     { value: 'income', label: 'Income' },
@@ -51,23 +53,20 @@ export function ComponentShowcase() {
     setErrors(newErrors)
     
     if (Object.keys(newErrors).length === 0) {
-      toast.success('Form submitted successfully!', 'All data has been saved.')
+      toast.success('Form submitted successfully!')
       setFormData({ name: '', email: '', amount: '', date: '', type: '' })
     } else {
-      toast.error('Please fix the errors', 'Some fields are missing or invalid.')
+      toast.error('Please fix the errors')
     }
   }
 
   const handleDeleteConfirm = () => {
-    confirm({
-      title: 'Delete Entry',
-      message: 'Are you sure you want to delete this entry? This action cannot be undone.',
-      variant: 'danger',
-      confirmText: 'Delete',
-      onConfirm: () => {
-        toast.success('Entry deleted', 'The entry has been permanently removed.')
-      },
-    })
+    setConfirmDialogOpen(true)
+  }
+
+  const confirmDelete = () => {
+    toast.success('Entry deleted')
+    setConfirmDialogOpen(false)
   }
 
   return (
@@ -223,25 +222,25 @@ export function ComponentShowcase() {
           <div className="flex flex-wrap gap-3">
             <Button 
               variant="outline" 
-              onClick={() => toast.success('Success!', 'Operation completed successfully.')}
+              onClick={() => toast.success('Operation completed successfully!')}
             >
               Success Toast
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => toast.error('Error!', 'Something went wrong. Please try again.')}
+              onClick={() => toast.error('Something went wrong. Please try again.')}
             >
               Error Toast
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => toast.warning('Warning!', 'Please review your input before proceeding.')}
+              onClick={() => toast.warning('Please review your input before proceeding.')}
             >
               Warning Toast
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => toast.info('Info', 'Here is some helpful information.')}
+              onClick={() => toast.info('Here is some helpful information.')}
             >
               Info Toast
             </Button>
@@ -282,7 +281,15 @@ export function ComponentShowcase() {
       </Modal>
 
       {/* Confirm Dialog */}
-      <ConfirmDialogComponent />
+      <ConfirmDialog
+        isOpen={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Entry"
+        message="Are you sure you want to delete this entry? This action cannot be undone."
+        confirmText="Delete"
+        confirmVariant="danger"
+      />
     </div>
   )
 }

@@ -1,5 +1,8 @@
-import { SelectHTMLAttributes, forwardRef } from 'react'
+'use client'
+
+import { SelectHTMLAttributes, forwardRef, useState } from 'react'
 import { clsx } from 'clsx'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
 
 interface SelectOption {
   value: string
@@ -30,17 +33,19 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     disabled,
     ...props 
   }, ref) => {
+    const [focused, setFocused] = useState(false)
+
     const selectClasses = clsx(
-      'w-full rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 appearance-none bg-no-repeat bg-right',
-      'bg-[url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'m6 8 4 4 4-4\'/%3e%3c/svg%3e")]',
+      'w-full rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1',
+      'appearance-none bg-white cursor-pointer',
       {
         // Size variants
-        'px-3 py-2 pr-8 text-sm bg-[length:16px_16px] bg-[right_8px_center]': size === 'sm',
-        'px-4 py-2.5 pr-10 text-sm bg-[length:20px_20px] bg-[right_12px_center]': size === 'md',
-        'px-4 py-3 pr-12 text-base bg-[length:20px_20px] bg-[right_16px_center]': size === 'lg',
+        'px-3 py-2 text-sm': size === 'sm',
+        'px-4 py-2.5 text-sm': size === 'md',
+        'px-4 py-3 text-base': size === 'lg',
         
         // Variant styles
-        'border-neutral-300 bg-white hover:border-neutral-400 focus:border-primary-500 focus:ring-primary-500/20': 
+        'border-neutral-300 hover:border-neutral-400 focus:border-primary-500 focus:ring-primary-500/20': 
           variant === 'default' && !error && !disabled,
         'border-neutral-200 bg-neutral-50 hover:bg-white hover:border-neutral-300 focus:bg-white focus:border-primary-500 focus:ring-primary-500/20': 
           variant === 'filled' && !error && !disabled,
@@ -66,29 +71,59 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </label>
         )}
         
-        <select
-          ref={ref}
-          className={selectClasses}
-          disabled={disabled}
-          aria-invalid={error ? 'true' : 'false'}
-          aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
-          {...props}
-        >
-          {placeholder && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
-          )}
-          {options.map((option) => (
-            <option 
-              key={option.value} 
-              value={option.value} 
-              disabled={option.disabled}
-            >
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            ref={ref}
+            className={selectClasses}
+            disabled={disabled}
+            onFocus={(e) => {
+              setFocused(true)
+              props.onFocus?.(e)
+            }}
+            onBlur={(e) => {
+              setFocused(false)
+              props.onBlur?.(e)
+            }}
+            aria-invalid={error ? 'true' : 'false'}
+            aria-describedby={error ? `${props.id}-error` : helperText ? `${props.id}-helper` : undefined}
+            {...props}
+          >
+            {placeholder && (
+              <option value="" disabled>
+                {placeholder}
+              </option>
+            )}
+            {options.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+                disabled={option.disabled}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+          
+          {/* Dropdown Arrow */}
+          <div className={clsx(
+            'absolute right-0 top-0 bottom-0 flex items-center justify-center pointer-events-none',
+            {
+              'w-10': size === 'sm',
+              'w-11': size === 'md',
+              'w-12': size === 'lg',
+            }
+          )}>
+            <ChevronDownIcon className={clsx(
+              'transition-transform duration-200',
+              focused ? 'rotate-180' : 'rotate-0',
+              disabled ? 'text-neutral-400' : 'text-neutral-500',
+              {
+                'w-4 h-4': size === 'sm',
+                'w-5 h-5': size === 'md' || size === 'lg',
+              }
+            )} />
+          </div>
+        </div>
         
         {(error || helperText) && (
           <div className="mt-2">

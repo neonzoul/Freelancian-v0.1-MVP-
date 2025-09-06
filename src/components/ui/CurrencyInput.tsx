@@ -10,7 +10,7 @@ import {
   isValidCurrencyAmount 
 } from '@/lib/currency'
 
-interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'type'> {
   value?: number
   onChange?: (value: number) => void
   label?: string
@@ -113,7 +113,6 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
             onBlur={handleBlur}
             className={inputClasses}
             disabled={disabled}
-            {...getCurrencyInputProps()}
             {...props}
           />
         </div>

@@ -141,7 +141,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = 'Input'
 
 // Number Input Component
-interface NumberInputProps extends Omit<InputProps, 'type'> {
+interface NumberInputProps extends Omit<InputProps, 'type' | 'min' | 'max' | 'step'> {
   min?: number
   max?: number
   step?: number
