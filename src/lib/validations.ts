@@ -78,16 +78,22 @@ export const UpdateEntrySchema = z.object({
 
 // Query parameter validation
 export const GetEntriesQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(50),
+  page: z.coerce.number().int().min(1).default(1).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50).optional(),
   kind: EntryKindSchema.optional(),
   month: z.string().regex(/^\d{4}-\d{2}$/, 'Month must be in YYYY-MM format').optional(),
   search: z.string().max(255).optional(),
-  sortBy: z.enum(['docDate', 'totalNetThb', 'title', 'createdAt']).default('docDate'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+  sortBy: z.enum(['docDate', 'totalNetThb', 'title', 'createdAt']).default('docDate').optional(),
+  sortOrder: z.enum(['asc', 'desc']).default('desc').optional(),
   clientName: z.string().max(255).optional(),
   vendorName: z.string().max(255).optional(),
-})
+}).transform((data) => ({
+  page: data.page ?? 1,
+  limit: data.limit ?? 50,
+  sortBy: data.sortBy ?? 'docDate',
+  sortOrder: data.sortOrder ?? 'desc',
+  ...data,
+}))
 
 // Financial calculation validation
 export const FinancialCalculationSchema = z.object({

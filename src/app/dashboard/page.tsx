@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { MetricsCard } from '@/components/dashboard/MetricsCard'
 import { RecentEntries } from '@/components/dashboard/RecentEntries'
@@ -34,6 +35,7 @@ function NetIcon() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const { data: metrics, isLoading: metricsLoading, error: metricsError } = useDashboardMetrics()
   const { data: recentEntries, isLoading: entriesLoading, error: entriesError } = useRecentEntries(10)
 
@@ -48,8 +50,7 @@ export default function DashboardPage() {
   }
 
   const handleAddEntry = () => {
-    // TODO: Navigate to entry form
-    console.log('Add new entry')
+    router.push('/entries/new')
   }
 
   const handleViewReports = () => {

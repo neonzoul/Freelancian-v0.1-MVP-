@@ -149,7 +149,14 @@ interface NumberInputProps extends Omit<InputProps, 'type'> {
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
-  ({ currency, ...props }, ref) => {
+  ({ currency, min, max, step, ...props }, ref) => {
+    const inputProps = {
+      ...props,
+      min: typeof min === 'number' ? min : undefined,
+      max: typeof max === 'number' ? max : undefined,
+      step: typeof step === 'number' ? step : undefined,
+    }
+    
     return (
       <Input
         ref={ref}
@@ -157,7 +164,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         leftIcon={currency ? (
           <span className="text-neutral-600 font-medium">฿</span>
         ) : undefined}
-        {...props}
+        {...inputProps}
       />
     )
   }
