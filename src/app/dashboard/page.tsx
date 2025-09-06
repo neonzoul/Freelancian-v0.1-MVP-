@@ -4,8 +4,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { MetricsCard } from '@/components/dashboard/MetricsCard'
-import { RecentEntries } from '@/components/dashboard/RecentEntries'
-import { MiniChart } from '@/components/dashboard/MiniChart'
+import { DynamicRecentEntries, DynamicMiniChart } from '@/lib/dynamic-imports'
 import { useDashboardMetrics, useRecentEntries } from '@/lib/hooks/use-dashboard'
 import { useErrorHandler } from '@/lib/hooks/use-error-handler'
 import { useToast } from '@/components/ui/Toast'
@@ -253,7 +252,7 @@ export default function DashboardPage() {
               {entriesLoading ? (
                 <CardSkeleton count={3} />
               ) : (
-                <RecentEntries
+                <DynamicRecentEntries
                   entries={(recentEntries as EntryResponse[]) || []}
                   isLoading={entriesLoading}
                   onEditEntry={handleEditEntry}
@@ -285,7 +284,7 @@ export default function DashboardPage() {
                 </div>
               }
             >
-              <MiniChart
+              <DynamicMiniChart
                 metrics={(metrics as DashboardMetrics) || {
                   totalIncome: 0,
                   totalExpenses: 0,

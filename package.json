@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "build:prod": "node scripts/deploy-production.js && next build",
+    "build:analyze": "node scripts/analyze-bundle.js",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
@@ -38,6 +39,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.32",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

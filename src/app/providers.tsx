@@ -14,11 +14,33 @@ export function Providers({ children }: { children: React.ReactNode }) {
           queries: {
             staleTime: 5 * 60 * 1000, // 5 minutes
             gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-            retry: 1,
+            retry: (failureCount, error: any) => {
+              // Don't retry on 4xx errors
+              if (error?.status >= 400 && error?.status < 500) {
+                return false
+              }
+              // Retry up to 2 times for other errors
+              return failureCount < 2
+            },
+            retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
             refetchOnWindowFocus: false,
+            refetchOnReconnect: true,
+            // Enable background refetching for better UX
+            refetchInterval: false,
+            refetchIntervalInBackground: false,
+            // Network mode for better offline handling
+            networkMode: 'online',
           },
           mutations: {
-            retry: 1,
+            retry: (failureCount, error: any) => {
+              // Don't retry on 4xx errors
+              if (error?.status >= 400 && error?.status < 500) {
+                return false
+              }
+              return failureCount < 1
+            },
+            retryDelay: 1000,
+            networkMode: 'online',
           },
         },
       })

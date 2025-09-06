@@ -34,8 +34,14 @@ model Entry {
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
   
-  // Performance indexes
+  // Performance indexes for optimized queries
   @@index([kind, docDate(sort: Desc)], name: "idx_entries_kind_date")
   @@index([createdAt(sort: Desc)], name: "idx_entries_created")
+  @@index([docDate(sort: Desc)], name: "idx_entries_doc_date")
+  @@index([kind, createdAt(sort: Desc)], name: "idx_entries_kind_created")
+  @@index([clientName], name: "idx_entries_client")
+  @@index([vendorName], name: "idx_entries_vendor")
+  @@index([title], name: "idx_entries_title")
+  @@index([kind, totalNetThb], name: "idx_entries_kind_amount")
   @@map("entries")
 }

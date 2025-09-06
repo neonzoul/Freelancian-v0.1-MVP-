@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { SkipLink } from '@/components/ui/SkipLink'
 import { AccessibilityButton } from '@/components/accessibility/AccessibilitySettings'
+import { PerformanceMonitor } from '@/components/performance/PerformanceMonitor'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -49,6 +50,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <AccessibilityButton />
+          <PerformanceMonitor />
         </Providers>
       </body>
     </html>
