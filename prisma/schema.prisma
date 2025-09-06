@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Entry {
+  id                String   @id @default(cuid())
+  kind              String   // "income" or "expense"
+  title             String
+  docDate           DateTime? @map("doc_date")
+  transferDate      DateTime? @map("transfer_date")
+  
+  clientName        String?  @map("client_name")
+  vendorName        String?  @map("vendor_name")
+  productService    String?  @map("product_service")
+  accountName       String?  @map("account_name")
+  
+  priceGrossThb     Float?   @map("price_gross_thb")
+  vatThb            Float?   @map("vat_thb")
+  withholdingThb    Float?   @map("withholding_thb")
+  commissionThb     Float?   @map("commission_thb")
+  totalNetThb       Float?   @map("total_net_thb")
+  
+  project           String?
+  remark            String?
+  invoiceNo         String?  @map("invoice_no")
+  
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  @@map("entries")
+}
