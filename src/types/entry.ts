@@ -84,8 +84,9 @@ export interface MonthlyTrend {
   totalExpenses: number
   netAmount: number
   entryCount: number
-}// 
-Query parameters for filtering entries
+}
+
+// Query parameters for filtering entries
 export interface GetEntriesQuery {
   page?: number
   limit?: number

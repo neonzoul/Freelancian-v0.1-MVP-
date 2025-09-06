@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { GetEntriesQuery, EntryKind } from '@/types/entry'
+import type { GetEntriesQuery } from '@/types/entry'
 
 export class EntryRepository {
   // Get entries with filtering and pagination
@@ -298,7 +298,6 @@ export class EntryRepository {
   async createMany(entries: Prisma.EntryCreateManyInput[]) {
     return prisma.entry.createMany({
       data: entries,
-      skipDuplicates: true,
     })
   }
 

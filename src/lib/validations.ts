@@ -39,8 +39,41 @@ export const CreateEntrySchema = z.object({
   path: ['vatThb'],
 })
 
-export const UpdateEntrySchema = CreateEntrySchema.partial().extend({
+export const UpdateEntrySchema = z.object({
   id: z.string().cuid('Invalid entry ID'),
+  kind: EntryKindSchema.optional(),
+  title: z.string().min(1, 'Title is required').max(255, 'Title must be less than 255 characters').optional(),
+  docDate: z.string().datetime().optional().or(z.literal('')).optional(),
+  transferDate: z.string().datetime().optional().or(z.literal('')).optional(),
+  clientName: z.string().max(255).optional().or(z.literal('')).optional(),
+  vendorName: z.string().max(255).optional().or(z.literal('')).optional(),
+  productService: z.string().max(255).optional().or(z.literal('')).optional(),
+  accountName: z.string().max(255).optional().or(z.literal('')).optional(),
+  priceGrossThb: z.number().nonnegative('Amount must be non-negative').optional(),
+  vatThb: z.number().nonnegative('VAT must be non-negative').optional(),
+  withholdingThb: z.number().nonnegative('Withholding must be non-negative').optional(),
+  commissionThb: z.number().nonnegative('Commission must be non-negative').optional(),
+  project: z.string().max(255).optional().or(z.literal('')).optional(),
+  remark: z.string().max(1000).optional().or(z.literal('')).optional(),
+  invoiceNo: z.string().max(100).optional().or(z.literal('')).optional(),
+}).refine((data) => {
+  // Business rule: withholding cannot exceed 3% of gross amount
+  if (data.priceGrossThb && data.withholdingThb) {
+    return data.withholdingThb <= data.priceGrossThb * 0.03
+  }
+  return true
+}, {
+  message: 'Withholding cannot exceed 3% of gross amount',
+  path: ['withholdingThb'],
+}).refine((data) => {
+  // Business rule: VAT should not exceed 10% of gross amount (reasonable check)
+  if (data.priceGrossThb && data.vatThb) {
+    return data.vatThb <= data.priceGrossThb * 0.10
+  }
+  return true
+}, {
+  message: 'VAT amount seems unusually high',
+  path: ['vatThb'],
 })
 
 // Query parameter validation
