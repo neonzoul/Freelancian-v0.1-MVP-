@@ -47,3 +47,10 @@ dist/
 
 ##- Prisma
 /prisma/migrations/
+prisma/schema.backup.prisma
+
+##- Vercel
+.vercel/
+
+##- Production files
+.env.production.local

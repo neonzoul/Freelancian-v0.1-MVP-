@@ -2,6 +2,12 @@ import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { GetEntriesQuery } from '@/types/entry'
 
+// Utility function to handle both Float (SQLite) and Decimal (PostgreSQL) types
+function toNumber(value: number | any | null): number {
+  if (value === null || value === undefined) return 0
+  return typeof value === 'number' ? value : Number(value)
+}
+
 export class EntryRepository {
   // Get entries with filtering and pagination
   async findMany(query: GetEntriesQuery) {
@@ -161,7 +167,7 @@ export class EntryRepository {
     let expenseCount = 0
 
     entries.forEach(entry => {
-      const amount = entry.totalNetThb || 0
+      const amount = toNumber(entry.totalNetThb)
       
       if (entry.kind === 'income') {
         totalIncome += amount
@@ -226,7 +232,7 @@ export class EntryRepository {
         }
       }
 
-      const amount = entry.totalNetThb || 0
+      const amount = toNumber(entry.totalNetThb)
       monthlyData[monthKey].entryCount++
 
       if (entry.kind === 'income') {
@@ -352,14 +358,14 @@ export class EntryRepository {
   }
 
   // Helper method to calculate metrics from entries
-  private calculateMetricsFromEntries(entries: Array<{ kind: string; totalNetThb: number | null }>) {
+  private calculateMetricsFromEntries(entries: Array<{ kind: string; totalNetThb: number | any | null }>) {
     let totalIncome = 0
     let totalExpenses = 0
     let incomeCount = 0
     let expenseCount = 0
 
     entries.forEach(entry => {
-      const amount = entry.totalNetThb || 0
+      const amount = toNumber(entry.totalNetThb)
       
       if (entry.kind === 'income') {
         totalIncome += amount

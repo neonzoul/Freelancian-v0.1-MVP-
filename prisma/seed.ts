@@ -2,6 +2,25 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+// Type-safe entry creation that works with both SQLite and PostgreSQL schemas
+type EntryData = {
+  kind: 'income' | 'expense'
+  title: string
+  docDate: Date
+  transferDate: Date
+  clientName?: string
+  vendorName?: string
+  productService?: string
+  priceGrossThb: number
+  vatThb: number
+  withholdingThb: number
+  commissionThb: number
+  totalNetThb: number
+  project?: string
+  invoiceNo?: string
+  remark?: string
+}
+
 async function main() {
   console.log('🌱 Starting database seeding...')
 
@@ -10,7 +29,7 @@ async function main() {
   console.log('🗑️  Cleared existing entries')
 
   // Sample income entries
-  const incomeEntries = [
+  const incomeEntries: EntryData[] = [
     {
       kind: 'income',
       title: 'Voice Over Project - Commercial Ad',
@@ -62,7 +81,7 @@ async function main() {
   ]
 
   // Sample expense entries
-  const expenseEntries = [
+  const expenseEntries: EntryData[] = [
     {
       kind: 'expense',
       title: 'Professional Microphone',
@@ -115,13 +134,23 @@ async function main() {
 
   // Insert income entries
   for (const entry of incomeEntries) {
-    await prisma.entry.create({ data: entry })
+    await prisma.entry.create({ 
+      data: {
+        ...entry,
+        kind: entry.kind as any, // Type assertion for enum compatibility
+      }
+    })
   }
   console.log(`✅ Created ${incomeEntries.length} income entries`)
 
   // Insert expense entries
   for (const entry of expenseEntries) {
-    await prisma.entry.create({ data: entry })
+    await prisma.entry.create({ 
+      data: {
+        ...entry,
+        kind: entry.kind as any, // Type assertion for enum compatibility
+      }
+    })
   }
   console.log(`✅ Created ${expenseEntries.length} expense entries`)
 

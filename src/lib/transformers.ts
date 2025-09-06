@@ -2,6 +2,12 @@ import type { Entry as PrismaEntry } from '@prisma/client'
 import type { Entry, EntryResponse, CreateEntryRequest } from '@/types/entry'
 import { ensureCurrencyPrecision, calculateTotalNet } from './calculations'
 
+// Utility function to handle both Float (SQLite) and Decimal (PostgreSQL) types
+function toNumber(value: number | any | null): number | undefined {
+  if (value === null || value === undefined) return undefined
+  return typeof value === 'number' ? value : Number(value)
+}
+
 // Transform Prisma Entry to API Entry Response
 export function transformEntryToResponse(entry: PrismaEntry): EntryResponse {
   return {
@@ -14,11 +20,11 @@ export function transformEntryToResponse(entry: PrismaEntry): EntryResponse {
     vendorName: entry.vendorName || undefined,
     productService: entry.productService || undefined,
     accountName: entry.accountName || undefined,
-    priceGrossThb: entry.priceGrossThb || undefined,
-    vatThb: entry.vatThb || undefined,
-    withholdingThb: entry.withholdingThb || undefined,
-    commissionThb: entry.commissionThb || undefined,
-    totalNetThb: entry.totalNetThb || undefined,
+    priceGrossThb: toNumber(entry.priceGrossThb),
+    vatThb: toNumber(entry.vatThb),
+    withholdingThb: toNumber(entry.withholdingThb),
+    commissionThb: toNumber(entry.commissionThb),
+    totalNetThb: toNumber(entry.totalNetThb),
     project: entry.project || undefined,
     remark: entry.remark || undefined,
     invoiceNo: entry.invoiceNo || undefined,

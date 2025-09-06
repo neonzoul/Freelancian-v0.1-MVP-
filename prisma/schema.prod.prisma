@@ -1,16 +1,16 @@
-// Development Prisma schema (SQLite)
+// Production Prisma schema (PostgreSQL)
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Entry {
   id                String    @id @default(cuid())
-  kind              String    // "income" or "expense" - SQLite doesn't support enums
+  kind              EntryKind
   title             String
   docDate           DateTime? @map("doc_date")
   transferDate      DateTime? @map("transfer_date")
@@ -20,12 +20,12 @@ model Entry {
   productService    String?   @map("product_service")
   accountName       String?   @map("account_name")
   
-  // Using Float for SQLite compatibility
-  priceGrossThb     Float?    @map("price_gross_thb")
-  vatThb            Float?    @map("vat_thb")
-  withholdingThb    Float?    @map("withholding_thb")
-  commissionThb     Float?    @map("commission_thb")
-  totalNetThb       Float?    @map("total_net_thb")
+  // Using Decimal for precise financial calculations
+  priceGrossThb     Decimal?  @map("price_gross_thb") @db.Decimal(14, 2)
+  vatThb            Decimal?  @map("vat_thb") @db.Decimal(14, 2)
+  withholdingThb    Decimal?  @map("withholding_thb") @db.Decimal(14, 2)
+  commissionThb     Decimal?  @map("commission_thb") @db.Decimal(14, 2)
+  totalNetThb       Decimal?  @map("total_net_thb") @db.Decimal(14, 2)
   
   project           String?
   remark            String?
@@ -38,4 +38,9 @@ model Entry {
   @@index([kind, docDate(sort: Desc)], name: "idx_entries_kind_date")
   @@index([createdAt(sort: Desc)], name: "idx_entries_created")
   @@map("entries")
+}
+
+enum EntryKind {
+  income
+  expense
 }
