@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { EntryResponse } from '@/types'
 import { Button } from '@/components/ui/Button'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -14,6 +15,7 @@ import {
   DocumentTextIcon
 } from '@heroicons/react/24/outline'
 import { clsx } from 'clsx'
+import { staggerItem, fadeInRight } from '@/lib/animations'
 
 interface EntryCardProps {
   entry: EntryResponse
@@ -29,12 +31,18 @@ export function EntryCard({ entry, onEdit, onDelete }: EntryCardProps) {
   const displayDate = entry.docDate ? new Date(entry.docDate) : new Date(entry.createdAt)
 
   return (
-    <div
+    <motion.div
+      variants={staggerItem}
       className={clsx(
-        'bg-white rounded-xl border border-neutral-200 p-6 transition-all duration-200 cursor-pointer group',
-        'hover:shadow-lg hover:border-neutral-300 hover:-translate-y-1',
+        'bg-white rounded-xl border border-neutral-200 p-6 cursor-pointer group',
         'focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
       )}
+      whileHover={{ 
+        y: -4, 
+        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        borderColor: 'rgb(212 212 216)'
+      }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -62,12 +70,15 @@ export function EntryCard({ entry, onEdit, onDelete }: EntryCardProps) {
         </div>
 
         {/* Quick Actions */}
-        <div
-          className={clsx(
-            'flex items-center gap-1 transition-all duration-200',
-            isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
-          )}
-        >
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              variants={fadeInRight}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="flex items-center gap-1"
+            >
           <Button
             variant="ghost"
             size="sm"
@@ -92,19 +103,23 @@ export function EntryCard({ entry, onEdit, onDelete }: EntryCardProps) {
           >
             <TrashIcon className="w-4 h-4" />
           </Button>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Amount */}
       <div className="mb-4">
-        <div
+        <motion.div
           className={clsx(
             'text-2xl font-bold',
             isIncome ? 'text-success-600' : 'text-error-600'
           )}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}
         >
           {isIncome ? '+' : '-'}{formatCurrency(Math.abs(amount))}
-        </div>
+        </motion.div>
         {entry.priceGrossThb && entry.priceGrossThb !== amount && (
           <div className="text-sm text-neutral-500">
             Gross: {formatCurrency(entry.priceGrossThb)}
@@ -186,6 +201,6 @@ export function EntryCard({ entry, onEdit, onDelete }: EntryCardProps) {
           </p>
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }

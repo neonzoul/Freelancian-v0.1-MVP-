@@ -2,7 +2,9 @@
 
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { clsx } from 'clsx'
+import { slideInRight, fadeInUp } from '@/lib/animations'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
@@ -102,9 +104,11 @@ function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
 
   return createPortal(
     <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full">
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
-      ))}
+      <AnimatePresence mode="popLayout">
+        {toasts.map((toast) => (
+          <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
+        ))}
+      </AnimatePresence>
     </div>,
     document.body
   )
@@ -116,17 +120,8 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onRemove }: ToastItemProps) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isLeaving, setIsLeaving] = useState(false)
-
-  useEffect(() => {
-    // Trigger enter animation
-    setTimeout(() => setIsVisible(true), 10)
-  }, [])
-
   const handleRemove = () => {
-    setIsLeaving(true)
-    setTimeout(() => onRemove(toast.id), 300)
+    onRemove(toast.id)
   }
 
   const getToastStyles = () => {
@@ -178,13 +173,18 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
   }
 
   return (
-    <div
-      className={clsx(
-        getToastStyles(),
-        'transform transition-all duration-300 ease-out',
-        isVisible && !isLeaving ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0',
-        isLeaving && 'scale-95'
-      )}
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: 300, scale: 0.8 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 300, scale: 0.8 }}
+      transition={{ 
+        type: 'spring', 
+        stiffness: 300, 
+        damping: 30,
+        opacity: { duration: 0.2 }
+      }}
+      className={getToastStyles()}
       role="alert"
       aria-live="polite"
     >
@@ -210,16 +210,18 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
           )}
         </div>
         
-        <button
+        <motion.button
           onClick={handleRemove}
           className="p-1 hover:bg-black/10 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-current"
           aria-label="Close notification"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   )
 }

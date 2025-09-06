@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { LivePreview } from './LivePreview'
 import { TaxCalculationHelpers } from './TaxCalculationHelpers'
+import { SuccessAnimation } from '@/components/ui/PageTransition'
 import { useCreateEntry } from '@/lib/hooks/use-entries'
 import { useRouter } from 'next/navigation'
 
@@ -89,10 +90,15 @@ export function EntryForm() {
     }
   }
 
+  const [showSuccess, setShowSuccess] = useState(false)
+
   const onSubmit = async (data: CreateEntryInput) => {
     try {
       await createEntryMutation.mutateAsync(data)
-      router.push('/dashboard')
+      setShowSuccess(true)
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
     } catch (error) {
       // Error handling is done in the mutation
       console.error('Failed to create entry:', error)
@@ -386,6 +392,12 @@ export function EntryForm() {
           )}
         />
       </motion.div>
+
+      {/* Success Animation */}
+      <SuccessAnimation 
+        isVisible={showSuccess} 
+        onComplete={() => setShowSuccess(false)}
+      />
     </div>
   )
 }

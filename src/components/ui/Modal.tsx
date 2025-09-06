@@ -2,7 +2,9 @@
 
 import { Fragment, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { clsx } from 'clsx'
+import { modalBackdrop, modalContent } from '@/lib/animations'
 
 interface ModalProps {
   isOpen: boolean
@@ -115,66 +117,88 @@ export function Modal({
     full: 'max-w-full mx-4',
   }
 
-  if (!isOpen) return null
-
-  const modalContent = (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={handleBackdropClick}
-    >
-      {/* Backdrop */}
-      <div 
-        className={clsx(
-          'fixed inset-0 bg-black/50 transition-opacity duration-300',
-          isOpen ? 'opacity-100' : 'opacity-0'
-        )}
-        aria-hidden="true"
-      />
-      
-      {/* Modal */}
-      <div
-        ref={modalRef}
-        className={clsx(
-          'relative w-full bg-white rounded-2xl shadow-strong transform transition-all duration-300',
-          sizeClasses[size],
-          isOpen ? 'opacity-100 scale-100 animate-scale-in' : 'opacity-0 scale-95',
-          className
-        )}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? 'modal-title' : undefined}
-        tabIndex={-1}
-        onKeyDown={handleKeyDown}
-      >
-        {/* Header */}
-        {title && (
-          <div className="flex items-center justify-between p-6 pb-0">
-            <h2 id="modal-title" className="text-xl font-semibold text-neutral-900">
-              {title}
-            </h2>
-            <button
-              onClick={onClose}
-              className="p-2 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors duration-200"
-              aria-label="Close modal"
+  const modalContentJSX = (
+    <AnimatePresence>
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={handleBackdropClick}
+        >
+          {/* Backdrop */}
+          <motion.div 
+            variants={modalBackdrop}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="fixed inset-0 bg-black/50"
+            aria-hidden="true"
+          />
+          
+          {/* Modal */}
+          <motion.div
+            variants={modalContent}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            ref={modalRef}
+            className={clsx(
+              'relative w-full bg-white rounded-2xl shadow-strong',
+              sizeClasses[size],
+              className
+            )}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? 'modal-title' : undefined}
+            tabIndex={-1}
+            onKeyDown={handleKeyDown}
+          >
+            {/* Header */}
+            {title && (
+              <div className="flex items-center justify-between p-6 pb-0">
+                <motion.h2 
+                  id="modal-title" 
+                  className="text-xl font-semibold text-neutral-900"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  {title}
+                </motion.h2>
+                <motion.button
+                  onClick={onClose}
+                  className="p-2 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors duration-200"
+                  aria-label="Close modal"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </motion.button>
+              </div>
+            )}
+            
+            {/* Content */}
+            <motion.div 
+              className={clsx('p-6', title && 'pt-4')}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        )}
-        
-        {/* Content */}
-        <div className={clsx('p-6', title && 'pt-4')}>
-          {children}
+              {children}
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   )
 
   // Render modal in portal
   return typeof window !== 'undefined' 
-    ? createPortal(modalContent, document.body)
+    ? createPortal(modalContentJSX, document.body)
     : null
 }
 

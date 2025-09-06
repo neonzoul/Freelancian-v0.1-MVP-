@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/Card'
+import { useAnimatedCurrency } from '@/lib/hooks/use-animated-counter'
 import { clsx } from 'clsx'
 
 interface MetricsCardProps {
@@ -14,53 +14,7 @@ interface MetricsCardProps {
   className?: string
 }
 
-// Animated counter hook
-function useAnimatedCounter(end: number, duration: number = 1000) {
-  const [count, setCount] = useState(0)
-  
-  useEffect(() => {
-    if (end === 0) {
-      setCount(0)
-      return
-    }
-    
-    let startTime: number
-    let animationFrame: number
-    
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime
-      const progress = Math.min((currentTime - startTime) / duration, 1)
-      
-      // Easing function for smooth animation
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-      setCount(Math.floor(end * easeOutQuart))
-      
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate)
-      }
-    }
-    
-    animationFrame = requestAnimationFrame(animate)
-    
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame)
-      }
-    }
-  }, [end, duration])
-  
-  return count
-}
 
-// Format Thai Baht currency
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('th-TH', {
-    style: 'currency',
-    currency: 'THB',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount)
-}
 
 export function MetricsCard({ 
   title, 
@@ -70,7 +24,10 @@ export function MetricsCard({
   isLoading = false,
   className 
 }: MetricsCardProps) {
-  const animatedValue = useAnimatedCounter(Math.abs(value), 1200)
+  const { formattedValue, isAnimating } = useAnimatedCurrency(value, {
+    duration: 1200,
+    delay: 200
+  })
   
   const variantStyles = {
     income: {
@@ -118,19 +75,28 @@ export function MetricsCard({
               </p>
               
               {isLoading ? (
-                <div className="h-8 bg-neutral-200 rounded animate-pulse mb-2" />
+                <motion.div 
+                  className="h-8 bg-neutral-200 rounded mb-2"
+                  animate={{
+                    opacity: [0.5, 1, 0.5],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
               ) : (
                 <motion.div
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.3 }}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.4, type: 'spring' }}
                   className={clsx(
                     'text-2xl font-bold mb-2',
                     styles.valueColor
                   )}
                 >
-                  {value < 0 && '-'}
-                  {formatCurrency(animatedValue)}
+                  {formattedValue}
                 </motion.div>
               )}
               
