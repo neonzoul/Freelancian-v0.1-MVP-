@@ -616,3 +616,193 @@ ask 9: Build comprehensive entry list page with filtering and search
 - Accessible design with proper ARIA labels and semantic HTML
 
 The reports page now provides comprehensive financial analysis with beautiful charts and trend indicators, meeting all requirements for Requirements 3.1-3.5.
+#
+# Task 11: Build CSV import functionality for data migration
+
+**Date:** September 6, 2025  
+**Duration:** ~4 hours  
+**Model:** Claude 3.5 Sonnet  
+
+### Implemented Details
+
+#### Core Components Created:
+1. **Import Page** (`src/app/import/page.tsx`)
+   - Multi-step wizard interface with progress indicators
+   - State management for file, entry type, parsed data, and mapping
+   - Smooth step transitions with Framer Motion animations
+   - Error handling and navigation between steps
+   - Integration with all import components
+
+2. **FileUpload Component** (`src/components/import/FileUpload.tsx`)
+   - Entry type selection (Income/Expense) with visual indicators
+   - Drag-and-drop file upload with visual feedback
+   - File validation (CSV only, max 10MB)
+   - Format guidelines and help text
+   - Responsive design with mobile-friendly interactions
+
+3. **ImportPreview Component** (`src/components/import/ImportPreview.tsx`)
+   - CSV parsing with proper quote and comma handling
+   - Data preview table showing first 5 rows
+   - File statistics and summary information
+   - Error handling for malformed CSV files
+   - Loading states during file processing
+
+4. **FieldMapping Component** (`src/components/import/FieldMapping.tsx`)
+   - Auto-mapping based on common Notion field names
+   - Interactive field mapping interface with dropdowns
+   - Visual priority indicators (Required, Recommended, Optional)
+   - Mapping validation and summary statistics
+   - Support for unmapping fields (skip import)
+
+5. **ImportProgress Component** (`src/components/import/ImportProgress.tsx`)
+   - Animated progress indicator during import
+   - Step-by-step progress visualization
+   - Processing tips and helpful information
+   - Smooth animations with Framer Motion
+
+6. **ImportResults Component** (`src/components/import/ImportResults.tsx`)
+   - Comprehensive import summary with statistics
+   - Success rate visualization with progress bars
+   - Financial summary showing imported amounts
+   - Error reporting with detailed error messages
+   - Navigation options to dashboard or entries list
+
+#### API Endpoints Created:
+7. **Preview API** (`src/app/api/import/preview/route.ts`)
+   - CSV file parsing and validation
+   - File type and size validation
+   - Basic CSV structure validation
+   - Returns parsed headers and preview rows
+
+8. **Execute API** (`src/app/api/import/execute/route.ts`)
+   - Full CSV import processing
+   - Field mapping application
+   - Data validation using existing Zod schemas
+   - Batch entry creation with error handling
+   - Comprehensive result reporting
+
+#### Supporting Types and Utilities:
+9. **Import Types** (`src/types/import.ts`)
+   - Complete TypeScript interfaces for import workflow
+   - Notion field mapping configurations
+   - Entry field labels and validation rules
+   - Import result and error structures
+
+### CSV Parsing Implementation
+
+#### Parsing Strategy:
+- **Custom CSV Parser**: Implemented custom parser handling quotes and commas
+- **Quote Handling**: Proper handling of quoted fields with embedded commas
+- **Header Detection**: Automatic header row detection and validation
+- **Data Validation**: Minimum row requirements and structure validation
+- **Error Recovery**: Graceful handling of malformed CSV files
+
+#### Field Mapping Logic:
+- **Auto-mapping**: Intelligent mapping based on common Notion field names
+- **Case-insensitive Matching**: Flexible matching for various naming conventions
+- **Partial Matching**: Fuzzy matching for similar field names
+- **Manual Override**: Users can adjust auto-mapping as needed
+- **Validation**: Required field validation before import
+
+### Data Validation and Processing
+
+#### Validation Approach:
+- **Zod Schema Integration**: Uses existing `CreateEntrySchema` for validation
+- **Type Conversion**: Automatic conversion of strings to appropriate types
+- **Date Parsing**: Flexible date parsing with multiple format support
+- **Currency Parsing**: Removes currency symbols and parses numeric values
+- **Business Rules**: Enforces withholding tax limits and other business rules
+
+#### Error Handling:
+- **Row-level Errors**: Detailed error reporting for each failed row
+- **Field-level Validation**: Specific field validation with helpful messages
+- **Batch Processing**: Continues processing even when individual rows fail
+- **Error Limits**: Limits error reporting to first 100 errors for performance
+
+### Import Progress and Results
+
+#### Progress Tracking:
+- **Multi-step Process**: Clear visualization of import steps
+- **Real-time Updates**: Progress updates during processing
+- **Processing Tips**: Helpful information during long imports
+- **Cancellation Support**: Framework for cancelling long-running imports
+
+#### Results Reporting:
+- **Success Metrics**: Total rows, success count, error count, skipped count
+- **Financial Summary**: Total amounts imported by type
+- **Error Details**: Detailed error messages with row and field information
+- **Duplicate Detection**: Framework for detecting and skipping duplicates
+
+### Challenges & Solutions
+
+#### Challenge 1: CSV Parsing Complexity
+**Problem**: CSV files can have complex quoting and escaping rules
+**Solution**: Implemented custom parser that properly handles quoted fields with embedded commas and newlines
+
+#### Challenge 2: Field Mapping UX
+**Problem**: Users need intuitive way to map CSV fields to entry fields
+**Solution**: Created auto-mapping based on common patterns with visual priority indicators and easy manual override
+
+#### Challenge 3: TypeScript Type Safety
+**Problem**: Complex type relationships between CSV data, mapping, and entry creation
+**Solution**: Created comprehensive type definitions with proper generic constraints and validation
+
+#### Challenge 4: Error Handling at Scale
+**Problem**: Large CSV files could generate thousands of errors
+**Solution**: Implemented error limiting, batching, and detailed but concise error reporting
+
+#### Challenge 5: User Experience Flow
+**Problem**: Multi-step import process needed to be intuitive and recoverable
+**Solution**: Created wizard-style interface with clear progress indicators and ability to go back and modify settings
+
+### Results and Verification
+
+#### Functional Requirements Met:
+✅ **Import page with file upload** - Drag-and-drop interface with validation  
+✅ **CSV parsing and preview** - Robust parsing with data preview table  
+✅ **Field mapping interface** - Auto-mapping with manual override capability  
+✅ **Import validation and error handling** - Comprehensive validation with detailed errors  
+✅ **Import progress and results** - Real-time progress with detailed results  
+✅ **Separate income/expense handling** - Entry type selection with appropriate field mappings  
+✅ **Import summary with error reporting** - Complete summary with statistics and error details  
+
+#### Technical Implementation:
+✅ **CSV parsing approach** - Custom parser handling complex CSV formats  
+✅ **Field mapping logic** - Intelligent auto-mapping with Notion compatibility  
+✅ **Error handling strategy** - Multi-level error handling with user-friendly messages  
+✅ **API integration** - RESTful API endpoints following existing patterns  
+✅ **Type safety** - Full TypeScript coverage with proper interfaces  
+✅ **Performance optimization** - Efficient processing with progress feedback  
+
+#### User Experience:
+✅ **Intuitive workflow** - Step-by-step wizard with clear progress  
+✅ **Visual feedback** - Animations and progress indicators throughout  
+✅ **Error recovery** - Ability to fix issues and retry import  
+✅ **Mobile compatibility** - Responsive design works on all devices  
+✅ **Accessibility** - Proper ARIA labels and keyboard navigation  
+✅ **Help and guidance** - Format guidelines and processing tips  
+
+#### Data Migration Features:
+✅ **Notion CSV compatibility** - Handles common Notion export formats  
+✅ **Flexible field mapping** - Supports various CSV structures  
+✅ **Data validation** - Ensures imported data meets business rules  
+✅ **Duplicate handling** - Framework for detecting duplicate entries  
+✅ **Batch processing** - Efficient processing of large files  
+✅ **Financial tracking** - Tracks imported amounts and provides summaries  
+
+### Next Steps
+- Task 12: Implement animations and micro-interactions
+- Task 13: Add comprehensive error handling and user feedback
+- Task 14: Implement responsive design and mobile optimization
+
+### Files Created/Modified:
+- `src/app/import/page.tsx` (new) - Main import page with wizard interface
+- `src/components/import/FileUpload.tsx` (new) - File upload with drag-and-drop
+- `src/components/import/ImportPreview.tsx` (new) - CSV preview and parsing
+- `src/components/import/FieldMapping.tsx` (new) - Interactive field mapping
+- `src/components/import/ImportProgress.tsx` (new) - Progress visualization
+- `src/components/import/ImportResults.tsx` (new) - Results and summary
+- `src/app/api/import/preview/route.ts` (new) - CSV preview API endpoint
+- `src/app/api/import/execute/route.ts` (new) - Import execution API endpoint
+- `src/types/import.ts` (new) - Import-related TypeScript types
+- `src/app/dashboard/page.tsx` (modified) - Added import button to dashboard

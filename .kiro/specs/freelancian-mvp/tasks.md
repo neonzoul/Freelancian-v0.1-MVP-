@@ -86,6 +86,7 @@
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
 - [x] 7. Build manual entry form with split-screen layout and live preview
+
   - Create EntryForm component with split-screen layout (form left, preview right)
   - Implement form fields with React Hook Form and Zod validation
   - Build LivePreview component that updates in real-time
@@ -98,6 +99,7 @@
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
 
 - [x] 8. Implement Thai Baht currency handling and financial calculations
+
   - Create currency formatting utilities for Thai Baht display
   - Implement calculation functions for income and expense totals
   - Add validation for withholding tax not exceeding 3% of gross amount
@@ -109,6 +111,7 @@
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
 - [x] 9. Build comprehensive entry list page with filtering and search
+
   - Create EntryList component with pagination support
   - Implement SearchFilter component with real-time filtering
   - Build entry cards with quick action buttons (edit, delete)
@@ -122,10 +125,6 @@
 
 - [x] 10. Implement reports page with charts and trend analysis
 
-
-
-
-
   - Create reports page layout with period selector
   - Build MonthlyChart component using Recharts with smooth animations
   - Implement SummaryStats component with trend indicators
@@ -136,7 +135,8 @@
   - **Commit Pattern**: `feat-Kiro: Implement reports page with charts and trends mode: Spec model: {model_name}`
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 11. Build CSV import functionality for data migration
+- [x] 11. Build CSV import functionality for data migration
+
 
   - Create import page with file upload interface
   - Implement CSV parsing and preview functionality
