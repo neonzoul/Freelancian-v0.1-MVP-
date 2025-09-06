@@ -310,6 +310,163 @@ export class EntryRepository {
       return false
     }
   }
+
+  // Get current month dashboard metrics with optimized query
+  async getCurrentMonthDashboard() {
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+    const entries = await prisma.entry.findMany({
+      where: {
+        docDate: {
+          gte: startOfMonth,
+          lte: endOfMonth,
+        },
+      },
+      select: {
+        kind: true,
+        totalNetThb: true,
+      },
+    })
+
+    return this.calculateMetricsFromEntries(entries)
+  }
+
+  // Get dashboard metrics for any date range
+  async getDashboardMetrics(startDate: Date, endDate: Date) {
+    const entries = await prisma.entry.findMany({
+      where: {
+        docDate: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      select: {
+        kind: true,
+        totalNetThb: true,
+      },
+    })
+
+    return this.calculateMetricsFromEntries(entries)
+  }
+
+  // Helper method to calculate metrics from entries
+  private calculateMetricsFromEntries(entries: Array<{ kind: string; totalNetThb: number | null }>) {
+    let totalIncome = 0
+    let totalExpenses = 0
+    let incomeCount = 0
+    let expenseCount = 0
+
+    entries.forEach(entry => {
+      const amount = entry.totalNetThb || 0
+      
+      if (entry.kind === 'income') {
+        totalIncome += amount
+        incomeCount++
+      } else if (entry.kind === 'expense') {
+        totalExpenses += Math.abs(amount)
+        expenseCount++
+      }
+    })
+
+    return {
+      totalIncome: Math.round(totalIncome * 100) / 100,
+      totalExpenses: Math.round(totalExpenses * 100) / 100,
+      netAmount: Math.round((totalIncome - totalExpenses) * 100) / 100,
+      entryCount: {
+        income: incomeCount,
+        expense: expenseCount,
+        total: incomeCount + expenseCount,
+      },
+    }
+  }
+
+  // Get aggregated data for multiple months efficiently
+  async getMonthlyAggregates(months: number = 6) {
+    const endDate = new Date()
+    const startDate = new Date()
+    startDate.setMonth(endDate.getMonth() - months + 1)
+    startDate.setDate(1)
+
+    // Use raw query for better performance with aggregation
+    const result = await prisma.$queryRaw<Array<{
+      month: string
+      kind: string
+      total_income: number
+      total_expenses: number
+      entry_count: number
+    }>>`
+      SELECT 
+        strftime('%Y-%m', doc_date) as month,
+        kind,
+        SUM(CASE WHEN kind = 'income' THEN COALESCE(total_net_thb, 0) ELSE 0 END) as total_income,
+        SUM(CASE WHEN kind = 'expense' THEN ABS(COALESCE(total_net_thb, 0)) ELSE 0 END) as total_expenses,
+        COUNT(*) as entry_count
+      FROM entries 
+      WHERE doc_date >= ${startDate.toISOString()} 
+        AND doc_date <= ${endDate.toISOString()}
+        AND doc_date IS NOT NULL
+      GROUP BY strftime('%Y-%m', doc_date), kind
+      ORDER BY month ASC
+    `
+
+    // Process the raw results into the expected format
+    const monthlyData: Record<string, {
+      totalIncome: number
+      totalExpenses: number
+      entryCount: number
+    }> = {}
+
+    result.forEach(row => {
+      if (!monthlyData[row.month]) {
+        monthlyData[row.month] = {
+          totalIncome: 0,
+          totalExpenses: 0,
+          entryCount: 0,
+        }
+      }
+
+      if (row.kind === 'income') {
+        monthlyData[row.month].totalIncome += Number(row.total_income)
+        monthlyData[row.month].entryCount += Number(row.entry_count)
+      } else if (row.kind === 'expense') {
+        monthlyData[row.month].totalExpenses += Number(row.total_expenses)
+        monthlyData[row.month].entryCount += Number(row.entry_count)
+      }
+    })
+
+    // Convert to array format and ensure all months are represented
+    const monthsArray: Array<{
+      month: string
+      totalIncome: number
+      totalExpenses: number
+      netAmount: number
+      entryCount: number
+    }> = []
+
+    for (let i = 0; i < months; i++) {
+      const date = new Date()
+      date.setMonth(date.getMonth() - months + 1 + i)
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+      
+      const data = monthlyData[monthKey] || {
+        totalIncome: 0,
+        totalExpenses: 0,
+        entryCount: 0,
+      }
+
+      monthsArray.push({
+        month: monthKey,
+        totalIncome: Math.round(data.totalIncome * 100) / 100,
+        totalExpenses: Math.round(data.totalExpenses * 100) / 100,
+        netAmount: Math.round((data.totalIncome - data.totalExpenses) * 100) / 100,
+        entryCount: data.entryCount,
+      })
+    }
+
+    return monthsArray
+  }
 }
 
 // Export singleton instance

@@ -84,6 +84,24 @@ export interface MonthlyTrend {
   totalExpenses: number
   netAmount: number
   entryCount: number
+  percentageChanges?: {
+    income: number
+    expenses: number
+    net: number
+  }
+}
+
+export interface TrendSummary {
+  totalMonths: number
+  averageIncome: number
+  averageExpenses: number
+  averageNet: number
+  totalEntries: number
+}
+
+export interface TrendsResponse {
+  trends: MonthlyTrend[]
+  summary: TrendSummary
 }
 
 // Query parameters for filtering entries
