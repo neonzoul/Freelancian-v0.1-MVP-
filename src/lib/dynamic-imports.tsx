@@ -37,7 +37,7 @@ export const DynamicRecentEntries = dynamic(
 
 // Reports page components
 export const DynamicMonthlyChart = dynamic(
-  () => import('@/components/reports/MonthlyChart'),
+  () => import('@/components/reports/MonthlyChart').then(mod => ({ default: mod.MonthlyChart })),
   {
     loading: ChartLoading,
     ssr: false,
@@ -45,7 +45,7 @@ export const DynamicMonthlyChart = dynamic(
 )
 
 export const DynamicSummaryStats = dynamic(
-  () => import('@/components/reports/SummaryStats'),
+  () => import('@/components/reports/SummaryStats').then(mod => ({ default: mod.SummaryStats })),
   {
     loading: CardLoading,
     ssr: true,
@@ -54,7 +54,7 @@ export const DynamicSummaryStats = dynamic(
 
 // Entry form components
 export const DynamicEntryForm = dynamic(
-  () => import('@/components/entries/EntryForm'),
+  () => import('@/components/entries/EntryForm').then(mod => ({ default: mod.EntryForm })),
   {
     loading: FormLoading,
     ssr: true,
@@ -62,7 +62,7 @@ export const DynamicEntryForm = dynamic(
 )
 
 export const DynamicLivePreview = dynamic(
-  () => import('@/components/entries/LivePreview'),
+  () => import('@/components/entries/LivePreview').then(mod => ({ default: mod.LivePreview })),
   {
     loading: () => (
       <div className="bg-white rounded-xl p-6 shadow-soft">
@@ -90,7 +90,7 @@ export const DynamicCSVImport = dynamic(
 
 // Entry list components
 export const DynamicEntryList = dynamic(
-  () => import('@/components/entries/EntryList'),
+  () => import('@/components/entries/EntryList').then(mod => ({ default: mod.EntryList })),
   {
     loading: CardLoading,
     ssr: true,
@@ -98,7 +98,7 @@ export const DynamicEntryList = dynamic(
 )
 
 export const DynamicSearchFilter = dynamic(
-  () => import('@/components/entries/SearchFilter'),
+  () => import('@/components/entries/SearchFilter').then(mod => ({ default: mod.SearchFilter })),
   {
     loading: () => (
       <div className="bg-white rounded-xl p-4 shadow-soft">
@@ -117,7 +117,7 @@ export const DynamicSearchFilter = dynamic(
 export function createDynamicImport<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   options: {
-    loading?: ComponentType
+    loading?: () => JSX.Element
     ssr?: boolean
     loadingType?: 'chart' | 'card' | 'form' | 'page'
   } = {}

@@ -4,13 +4,13 @@ import { entryRepository } from '@/lib/repositories/entry-repository'
 import { CreateEntrySchema } from '@/lib/validations'
 import { transformCreateRequestToPrisma } from '@/lib/transformers'
 import { createSuccessResponse, handleGenericError } from '@/lib/api-errors'
-import type { FieldMappingConfig, ImportResult, ImportValidationError } from '@/types/import'
+import type { FieldMapping, ImportResult, ImportValidationError } from '@/types/import'
 
 // Validation schema for import request
 const ImportRequestSchema = z.object({
   file: z.instanceof(File),
   entryType: z.enum(['income', 'expense']),
-  mapping: z.string().transform((str) => JSON.parse(str) as FieldMappingConfig),
+  mapping: z.string().transform((str) => JSON.parse(str) as FieldMapping),
 })
 
 export async function POST(request: NextRequest) {
@@ -163,12 +163,14 @@ export async function POST(request: NextRequest) {
     // Create import result
     const result: ImportResult = {
       success: errorCount === 0,
-      totalRows: dataRows.length,
-      successCount,
-      errorCount,
-      skippedCount,
-      errors: errors.slice(0, 100), // Limit errors to first 100
+      imported: successCount,
+      skipped: skippedCount,
+      errors: errors.slice(0, 100).map(err => `Row ${err.row}: ${err.error}`), // Limit errors to first 100
       summary: {
+        totalRows: dataRows.length,
+        successfulImports: successCount,
+        skippedRows: skippedCount,
+        errorRows: errorCount,
         totalIncome: totalIncome > 0 ? totalIncome : undefined,
         totalExpenses: totalExpenses > 0 ? totalExpenses : undefined,
         duplicatesSkipped: skippedCount,

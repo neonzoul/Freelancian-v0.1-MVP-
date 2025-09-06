@@ -224,7 +224,6 @@
 
 - [x] 18. Add comprehensive testing suite
 
-
   - Write unit tests for utility functions and calculations
   - Create component tests using React Testing Library
   - Implement API endpoint tests for all routes
@@ -236,7 +235,7 @@
   - **Commit Pattern**: `test-Kiro: Add comprehensive testing suite mode: Spec model: {model_name}`
   - _Requirements: 5.6, 1.5, 1.6_
 
-- [ ] 19. Final integration and user acceptance testing
+- [x] 19. Final integration and user acceptance testing
 
   - Test complete user workflows from entry creation to reporting
   - Verify all calculations work correctly with Thai tax rules
@@ -249,7 +248,9 @@
   - **Commit Pattern**: `test-Kiro: Complete final integration and user acceptance testing mode: Spec model: {model_name}`
   - _Requirements: 8.5, 7.1, 7.2, 7.6, 7.7_
 
-- [ ] 20. Documentation and deployment preparation
+
+- [x] 20. Documentation and deployment preparation
+
   - Create user documentation for key features
   - Document API endpoints and data models
   - Set up monitoring and error tracking for production

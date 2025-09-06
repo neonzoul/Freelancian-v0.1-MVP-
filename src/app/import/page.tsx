@@ -6,10 +6,10 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { FileUpload } from '@/components/import/FileUpload'
 import { ImportPreview } from '@/components/import/ImportPreview'
-import { FieldMapping } from '@/components/import/FieldMapping'
+import { FieldMapping as FieldMappingComponent } from '@/components/import/FieldMapping'
 import { ImportResults } from '@/components/import/ImportResults'
 import { ImportProgress } from '@/components/import/ImportProgress'
-import type { ImportStep, ParsedCSVData, FieldMappingConfig, ImportResult } from '@/types/import'
+import type { ImportStep, ParsedCSVData, FieldMapping, ImportResult } from '@/types/import'
 
 export default function ImportPage() {
   const router = useRouter()
@@ -17,7 +17,7 @@ export default function ImportPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [entryType, setEntryType] = useState<'income' | 'expense'>('income')
   const [parsedData, setParsedData] = useState<ParsedCSVData | null>(null)
-  const [fieldMapping, setFieldMapping] = useState<FieldMappingConfig>({})
+  const [fieldMapping, setFieldMapping] = useState<FieldMapping>({})
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -32,13 +32,13 @@ export default function ImportPage() {
     setCurrentStep('mapping')
   }
 
-  const handleMappingConfirm = (mapping: FieldMappingConfig) => {
+  const handleMappingConfirm = (mapping: FieldMapping) => {
     setFieldMapping(mapping)
     setCurrentStep('processing')
     processImport(mapping)
   }
 
-  const processImport = async (mapping: FieldMappingConfig) => {
+  const processImport = async (mapping: FieldMapping) => {
     if (!parsedData || !selectedFile) return
 
     setIsProcessing(true)
@@ -179,7 +179,7 @@ export default function ImportPage() {
           )}
 
           {currentStep === 'mapping' && parsedData && (
-            <FieldMapping
+            <FieldMappingComponent
               parsedData={parsedData}
               entryType={entryType}
               onConfirm={handleMappingConfirm}

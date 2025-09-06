@@ -7,7 +7,7 @@ export interface ParsedCSVData {
   previewRows: string[][] // First 5 rows for preview
 }
 
-export interface FieldMappingConfig {
+export interface FieldMapping {
   [csvField: string]: string | null // Maps CSV field to our Entry field
 }
 
@@ -20,12 +20,14 @@ export interface ImportValidationError {
 
 export interface ImportResult {
   success: boolean
-  totalRows: number
-  successCount: number
-  errorCount: number
-  skippedCount: number
-  errors: ImportValidationError[]
+  imported: number
+  skipped: number
+  errors: string[]
   summary: {
+    totalRows: number
+    successfulImports: number
+    skippedRows: number
+    errorRows: number
     totalIncome?: number
     totalExpenses?: number
     duplicatesSkipped?: number
@@ -35,7 +37,7 @@ export interface ImportResult {
 export interface CSVImportRequest {
   file: File
   entryType: 'income' | 'expense'
-  mapping: FieldMappingConfig
+  mapping: FieldMapping
 }
 
 // Notion CSV field mappings (common field names from Notion exports)

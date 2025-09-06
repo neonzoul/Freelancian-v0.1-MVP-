@@ -1,5 +1,7 @@
 'use client'
 
+import React from 'react'
+
 // Performance monitoring utilities for Core Web Vitals and custom metrics
 
 interface PerformanceMetric {
@@ -57,10 +59,10 @@ export function measureCLS() {
   if (typeof window === 'undefined') return
 
   let clsValue = 0
-  let clsEntries: LayoutShift[] = []
+  let clsEntries: any[] = []
 
   const observer = new PerformanceObserver((list) => {
-    for (const entry of list.getEntries() as LayoutShift[]) {
+    for (const entry of list.getEntries() as any[]) {
       // Only count layout shifts without recent user input
       if (!entry.hadRecentInput) {
         clsValue += entry.value
@@ -185,12 +187,11 @@ export function trackQueryPerformance(queryKey: string, startTime: number) {
 
 // Component render performance tracking
 export function useRenderPerformance(componentName: string) {
-  if (typeof window === 'undefined') return
-
   const startTime = performance.now()
   
   // Track component mount time
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
     measureCustomMetric(`Component Mount: ${componentName}`, startTime)
   }, [componentName, startTime])
 }
@@ -200,7 +201,7 @@ export function analyzeBundleSize() {
   if (typeof window === 'undefined') return
 
   // Get all loaded scripts
-  const scripts = Array.from(document.querySelectorAll('script[src]'))
+  const scripts = Array.from(document.querySelectorAll('script[src]')) as HTMLScriptElement[]
   let totalSize = 0
 
   scripts.forEach(async (script) => {

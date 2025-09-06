@@ -5,18 +5,18 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Select } from '@/components/ui/Select'
-import type { ParsedCSVData, FieldMappingConfig } from '@/types/import'
+import type { ParsedCSVData, FieldMapping } from '@/types/import'
 import { NOTION_FIELD_MAPPINGS, ENTRY_FIELD_LABELS, REQUIRED_FIELDS, RECOMMENDED_FIELDS } from '@/types/import'
 
 interface FieldMappingProps {
   parsedData: ParsedCSVData
   entryType: 'income' | 'expense'
-  onConfirm: (mapping: FieldMappingConfig) => void
+  onConfirm: (mapping: FieldMapping) => void
   onBack: () => void
 }
 
 export function FieldMapping({ parsedData, entryType, onConfirm, onBack }: FieldMappingProps) {
-  const [mapping, setMapping] = useState<FieldMappingConfig>({})
+  const [mapping, setMapping] = useState<FieldMapping>({})
   const [autoMappingApplied, setAutoMappingApplied] = useState(false)
 
   // Available entry fields based on type
@@ -38,7 +38,7 @@ export function FieldMapping({ parsedData, entryType, onConfirm, onBack }: Field
   }, [parsedData, entryType]) // applyAutoMapping is defined inside the component and doesn't need to be in deps
 
   const applyAutoMapping = () => {
-    const autoMapping: FieldMappingConfig = {}
+    const autoMapping: FieldMapping = {}
     const notionMappings = NOTION_FIELD_MAPPINGS[entryType] as Record<string, string>
 
     parsedData.headers.forEach(header => {

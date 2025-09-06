@@ -14,7 +14,7 @@ interface ImportResultsProps {
 }
 
 export function ImportResults({ result, onStartOver, onGoToDashboard, onGoToEntries }: ImportResultsProps) {
-  const successRate = result.totalRows > 0 ? (result.successCount / result.totalRows) * 100 : 0
+  const successRate = result.summary.totalRows > 0 ? (result.summary.successfulImports / result.summary.totalRows) * 100 : 0
 
   return (
     <div className="space-y-6">
@@ -45,8 +45,8 @@ export function ImportResults({ result, onStartOver, onGoToDashboard, onGoToEntr
           
           <p className="text-neutral-600">
             {result.success 
-              ? `Successfully imported ${result.successCount} entries`
-              : `Imported ${result.successCount} entries with ${result.errorCount} errors`
+              ? `Successfully imported ${result.imported} entries`
+              : `Imported ${result.imported} entries with ${result.summary.errorRows} errors`
             }
           </p>
         </Card>
@@ -66,28 +66,28 @@ export function ImportResults({ result, onStartOver, onGoToDashboard, onGoToEntr
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-900">
-                {result.totalRows}
+                {result.summary.totalRows}
               </div>
               <div className="text-sm text-blue-700">Total Rows</div>
             </div>
             
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-900">
-                {result.successCount}
+                {result.imported}
               </div>
               <div className="text-sm text-green-700">Successful</div>
             </div>
             
             <div className="text-center p-4 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-900">
-                {result.errorCount}
+                {result.summary.errorRows}
               </div>
               <div className="text-sm text-red-700">Errors</div>
             </div>
             
             <div className="text-center p-4 bg-yellow-50 rounded-lg">
               <div className="text-2xl font-bold text-yellow-900">
-                {result.skippedCount}
+                {result.skipped}
               </div>
               <div className="text-sm text-yellow-700">Skipped</div>
             </div>
@@ -182,17 +182,9 @@ export function ImportResults({ result, onStartOver, onGoToDashboard, onGoToEntr
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-red-900">
-                        Row {error.row}: {error.field}
+                      <div className="text-sm text-red-900">
+                        {error}
                       </div>
-                      <div className="text-sm text-red-700">
-                        {error.error}
-                      </div>
-                      {error.value && (
-                        <div className="text-xs text-red-600 mt-1 font-mono bg-red-100 px-2 py-1 rounded">
-                          Value: {error.value}
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>

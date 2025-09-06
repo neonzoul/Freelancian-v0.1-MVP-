@@ -29,7 +29,12 @@
     "test:e2e:headed": "playwright test --headed",
     "test:a11y": "node scripts/test-accessibility.js",
     "test:a11y:ci": "node scripts/test-accessibility.js --headless",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "monitor:setup": "node scripts/setup-monitoring.js",
+    "monitor:health": "curl -f http://localhost:3000/api/health || exit 1",
+    "monitor:test": "npm run monitor:health && echo \"✅ Monitoring setup verified\"",
+    "deploy:verify": "node scripts/verify-deployment.js",
+    "deploy:verify:prod": "node scripts/verify-deployment.js --url https://your-app.vercel.app"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
