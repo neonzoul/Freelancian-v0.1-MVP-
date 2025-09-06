@@ -15,10 +15,7 @@
 
 ---
 
-- [-] 1. Set up project foundation and development environment
-
-
-
+- [x] 1. Set up project foundation and development environment
   - Initialize Next.js 14 project with TypeScript and App Router
   - Configure Tailwind CSS with custom design system tokens
   - Set up Prisma ORM with SQLite for development
@@ -28,7 +25,10 @@
   - **Commit Pattern**: `feat-Kiro: Set up Next.js project foundation mode: Spec model: {model_name}`
   - _Requirements: 8.4_
 
-- [ ] 2. Implement database schema and core data models
+- [x] 2. Implement database schema and core data models
+
+
+
 
   - Create Prisma schema for Entry model with all required fields
   - Implement database migrations for entries table with computed columns

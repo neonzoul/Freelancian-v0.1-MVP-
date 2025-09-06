@@ -11,29 +11,33 @@ datasource db {
 }
 
 model Entry {
-  id                String   @id @default(cuid())
-  kind              String   // "income" or "expense"
+  id                String    @id @default(cuid())
+  kind              String    // "income" or "expense" - SQLite doesn't support enums
   title             String
   docDate           DateTime? @map("doc_date")
   transferDate      DateTime? @map("transfer_date")
   
-  clientName        String?  @map("client_name")
-  vendorName        String?  @map("vendor_name")
-  productService    String?  @map("product_service")
-  accountName       String?  @map("account_name")
+  clientName        String?   @map("client_name")
+  vendorName        String?   @map("vendor_name")
+  productService    String?   @map("product_service")
+  accountName       String?   @map("account_name")
   
-  priceGrossThb     Float?   @map("price_gross_thb")
-  vatThb            Float?   @map("vat_thb")
-  withholdingThb    Float?   @map("withholding_thb")
-  commissionThb     Float?   @map("commission_thb")
-  totalNetThb       Float?   @map("total_net_thb")
+  // Using Float for SQLite compatibility, will handle precision in application layer
+  priceGrossThb     Float?    @map("price_gross_thb")
+  vatThb            Float?    @map("vat_thb")
+  withholdingThb    Float?    @map("withholding_thb")
+  commissionThb     Float?    @map("commission_thb")
+  totalNetThb       Float?    @map("total_net_thb")
   
   project           String?
   remark            String?
-  invoiceNo         String?  @map("invoice_no")
+  invoiceNo         String?   @map("invoice_no")
   
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
   
+  // Performance indexes
+  @@index([kind, docDate(sort: Desc)], name: "idx_entries_kind_date")
+  @@index([createdAt(sort: Desc)], name: "idx_entries_created")
   @@map("entries")
 }
