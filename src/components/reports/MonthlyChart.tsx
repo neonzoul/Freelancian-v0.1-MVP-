@@ -178,12 +178,12 @@ export function MonthlyChart({ trends, isLoading, selectedPeriod }: MonthlyChart
     >
       <Card hover variant="elevated">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-neutral-900 mb-1">
+              <h3 className="text-base sm:text-lg font-semibold text-neutral-900 mb-1">
                 Monthly Income vs Expenses
               </h3>
-              <p className="text-sm text-neutral-600">
+              <p className="text-xs sm:text-sm text-neutral-600">
                 Financial trends over the last {selectedPeriod} months
               </p>
             </div>
@@ -195,7 +195,7 @@ export function MonthlyChart({ trends, isLoading, selectedPeriod }: MonthlyChart
         </CardHeader>
         
         <CardContent>
-          <div className="h-96">
+          <div className="h-64 sm:h-80 lg:h-96">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={chartData}
@@ -227,17 +227,19 @@ export function MonthlyChart({ trends, isLoading, selectedPeriod }: MonthlyChart
                   dataKey="monthDisplay"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
                   angle={-45}
                   textAnchor="end"
-                  height={60}
+                  height={50}
+                  interval="preserveStartEnd"
                 />
                 
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
                   tickFormatter={(value) => `฿${(value / 1000).toFixed(0)}k`}
+                  width={60}
                 />
                 
                 <Tooltip content={<CustomTooltip />} />
@@ -297,7 +299,7 @@ export function MonthlyChart({ trends, isLoading, selectedPeriod }: MonthlyChart
             transition={{ delay: 1, duration: 0.5 }}
             className="mt-6 pt-4 border-t border-neutral-100"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
               <div className="text-center">
                 <div className="font-semibold text-green-600">
                   ฿{maxIncome.toLocaleString()}

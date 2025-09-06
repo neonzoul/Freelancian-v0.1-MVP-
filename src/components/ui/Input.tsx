@@ -28,20 +28,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const [focused, setFocused] = useState(false)
 
     const inputClasses = clsx(
-      'w-full rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1',
+      'w-full rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 touch-manipulation',
       {
-        // Size variants
-        'px-3 py-2 text-sm': size === 'sm',
-        'px-4 py-2.5 text-sm': size === 'md',
-        'px-4 py-3 text-base': size === 'lg',
+        // Size variants - mobile-first with larger touch targets
+        'px-3 py-2.5 text-base sm:text-sm min-h-[44px]': size === 'sm',
+        'px-4 py-3 text-base sm:text-sm min-h-[48px]': size === 'md',
+        'px-4 py-3.5 text-base min-h-[52px]': size === 'lg',
         
         // Icon padding adjustments
-        'pl-10': leftIcon && size === 'sm',
-        'pl-11': leftIcon && size === 'md',
-        'pl-12': leftIcon && size === 'lg',
-        'pr-10': rightIcon && size === 'sm',
-        'pr-11': rightIcon && size === 'md',
-        'pr-12': rightIcon && size === 'lg',
+        'pl-11': leftIcon && size === 'sm',
+        'pl-12': leftIcon && size === 'md',
+        'pl-13': leftIcon && size === 'lg',
+        'pr-11': rightIcon && size === 'sm',
+        'pr-12': rightIcon && size === 'md',
+        'pr-13': rightIcon && size === 'lg',
         
         // Variant styles
         'border-neutral-300 bg-white hover:border-neutral-400 focus:border-primary-500 focus:ring-primary-500/20': 
@@ -54,6 +54,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         
         // Disabled state
         'border-neutral-200 bg-neutral-100 text-neutral-500 cursor-not-allowed': disabled,
+        
+        // Prevent zoom on iOS Safari
+        'no-zoom': true,
       },
       className
     )
@@ -75,9 +78,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <div className={clsx(
               'absolute left-0 top-0 bottom-0 flex items-center justify-center text-neutral-400',
               {
-                'w-10': size === 'sm',
-                'w-11': size === 'md',
-                'w-12': size === 'lg',
+                'w-11': size === 'sm',
+                'w-12': size === 'md',
+                'w-13': size === 'lg',
               }
             )}>
               {leftIcon}
@@ -106,9 +109,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <div className={clsx(
               'absolute right-0 top-0 bottom-0 flex items-center justify-center text-neutral-400',
               {
-                'w-10': size === 'sm',
-                'w-11': size === 'md',
-                'w-12': size === 'lg',
+                'w-11': size === 'sm',
+                'w-12': size === 'md',
+                'w-13': size === 'lg',
               }
             )}>
               {rightIcon}

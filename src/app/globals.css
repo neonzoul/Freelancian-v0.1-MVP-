@@ -7,20 +7,42 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
   }
   
   body {
     @apply bg-neutral-50 text-neutral-900;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    /* Better text rendering on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent zoom on input focus on iOS */
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Improve touch targets on mobile */
+  button, 
+  [role="button"], 
+  input[type="submit"], 
+  input[type="button"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Better focus styles for keyboard navigation */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200;
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-3 sm:py-2 rounded-lg transition-colors duration-200 min-h-[44px] touch-manipulation;
   }
   
   .btn-secondary {
-    @apply bg-neutral-200 hover:bg-neutral-300 text-neutral-900 font-medium px-4 py-2 rounded-lg transition-colors duration-200;
+    @apply bg-neutral-200 hover:bg-neutral-300 text-neutral-900 font-medium px-4 py-3 sm:py-2 rounded-lg transition-colors duration-200 min-h-[44px] touch-manipulation;
   }
   
   .card {
@@ -28,6 +50,80 @@
   }
   
   .input-field {
-    @apply w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+    @apply w-full px-3 py-3 sm:py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 min-h-[44px] text-base sm:text-sm;
+  }
+  
+  /* Mobile-specific utilities */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+  }
+  
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-text {
+    @apply text-base sm:text-sm;
+  }
+  
+  /* Prevent zoom on input focus (iOS Safari) */
+  .no-zoom {
+    font-size: 16px !important;
+  }
+  
+  @media (max-width: 640px) {
+    .no-zoom {
+      font-size: 16px !important;
+    }
+  }
+  
+  /* Safe area support for devices with notches */
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-inset-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-inset-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Smooth scrolling on mobile */
+  @media (max-width: 768px) {
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  
+  /* Better tap highlighting */
+  * {
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Improve form controls on mobile */
+  @media (max-width: 640px) {
+    select,
+    textarea,
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="month"],
+    input[type="time"],
+    input[type="week"] {
+      font-size: 16px !important;
+      border-radius: 8px;
+    }
   }
 }

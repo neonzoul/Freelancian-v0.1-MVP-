@@ -67,10 +67,10 @@ export function MetricsCard({
           styles.accentColor
         )}
       >
-        <CardContent className="p-6">
+        <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-medium text-neutral-600 mb-1">
+              <p className="text-xs sm:text-sm font-medium text-neutral-600 mb-1">
                 {title}
               </p>
               
@@ -92,7 +92,7 @@ export function MetricsCard({
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.4, type: 'spring' }}
                   className={clsx(
-                    'text-2xl font-bold mb-2',
+                    'text-xl sm:text-2xl font-bold mb-2',
                     styles.valueColor
                   )}
                 >
@@ -110,11 +110,11 @@ export function MetricsCard({
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.3, duration: 0.5, type: 'spring' }}
               className={clsx(
-                'w-12 h-12 rounded-full flex items-center justify-center',
+                'w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center',
                 styles.iconBg
               )}
             >
-              <div className={clsx('w-6 h-6', styles.iconColor)}>
+              <div className={clsx('w-5 h-5 sm:w-6 sm:h-6', styles.iconColor)}>
                 {icon}
               </div>
             </motion.div>

@@ -111,7 +111,7 @@ export function EntryForm() {
   ]
 
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+    <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-8">
       {/* Form Section */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -119,8 +119,8 @@ export function EntryForm() {
         transition={{ duration: 0.5 }}
         className="space-y-6"
       >
-        <Card className="p-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <Card className="p-4 sm:p-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Entry Type Toggle */}
             <div className="space-y-4">
               <Select
@@ -160,8 +160,8 @@ export function EntryForm() {
             </div>
 
             {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-neutral-900">Basic Information</h3>
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base sm:text-lg font-semibold text-neutral-900">Basic Information</h3>
               
               <Input
                 {...register('title')}
@@ -171,7 +171,7 @@ export function EntryForm() {
                 size="lg"
               />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <DateInput
                   {...register('docDate')}
                   label="Document Date"
@@ -219,7 +219,7 @@ export function EntryForm() {
                 )}
               </AnimatePresence>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
                   {...register('productService')}
                   label="Product/Service"
@@ -237,8 +237,8 @@ export function EntryForm() {
             </div>
 
             {/* Financial Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-neutral-900">Financial Details</h3>
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base sm:text-lg font-semibold text-neutral-900">Financial Details</h3>
               
               <Input
                 {...register('priceGrossThb', {
@@ -264,7 +264,7 @@ export function EntryForm() {
                 onWhtToggle={handleWhtToggle}
               />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
                   {...register('vatThb', { valueAsNumber: true })}
                   type="number"
@@ -314,10 +314,10 @@ export function EntryForm() {
             </div>
 
             {/* Additional Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-neutral-900">Additional Details</h3>
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base sm:text-lg font-semibold text-neutral-900">Additional Details</h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
                   {...register('project')}
                   label="Project"
@@ -350,13 +350,13 @@ export function EntryForm() {
             </div>
 
             {/* Form Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-neutral-200">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-neutral-200">
               <Button
                 type="button"
                 variant="outline"
                 size="lg"
                 onClick={() => router.back()}
-                className="flex-1"
+                className="flex-1 order-2 sm:order-1"
               >
                 Cancel
               </Button>
@@ -365,7 +365,7 @@ export function EntryForm() {
                 type="submit"
                 size="lg"
                 loading={isSubmitting}
-                className="flex-1"
+                className="flex-1 order-1 sm:order-2"
               >
                 {isSubmitting ? 'Creating Entry...' : 'Create Entry'}
               </Button>

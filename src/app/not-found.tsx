@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { fadeInUp, staggerChildren } from '@/lib/animations'
+import { fadeInUp, staggerContainer } from '@/lib/animations'
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center p-4">
       <motion.div
-        variants={staggerChildren}
+        variants={staggerContainer}
         initial="initial"
         animate="animate"
         className="max-w-lg w-full text-center"

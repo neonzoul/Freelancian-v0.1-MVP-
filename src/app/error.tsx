@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { fadeInUp, staggerChildren } from '@/lib/animations'
+import { fadeInUp, staggerContainer } from '@/lib/animations'
 
 interface ErrorPageProps {
   error: Error & { digest?: string }
@@ -25,7 +25,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
     if (error.message.includes('fetch')) {
       return {
         title: 'Connection Problem',
-        description: 'We're having trouble connecting to our servers. Please check your internet connection and try again.',
+        description: "We're having trouble connecting to our servers. Please check your internet connection and try again.",
         suggestion: 'This is usually temporary and should resolve itself shortly.'
       }
     }
@@ -49,7 +49,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
     // Default error message
     return {
       title: 'Something went wrong',
-      description: 'We encountered an unexpected error. Don't worry, your data is safe.',
+      description: "We encountered an unexpected error. Don't worry, your data is safe.",
       suggestion: 'You can try refreshing the page or go back to continue.'
     }
   }
@@ -59,7 +59,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-error-50 to-neutral-50 flex items-center justify-center p-4">
       <motion.div
-        variants={staggerChildren}
+        variants={staggerContainer}
         initial="initial"
         animate="animate"
         className="max-w-lg w-full text-center"

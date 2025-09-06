@@ -11,6 +11,7 @@ import { useErrorHandler } from '@/lib/hooks/use-error-handler'
 import { useToast } from '@/components/ui/Toast'
 import { ErrorBoundary } from '@/components/error/ErrorBoundary'
 import { MetricsSkeleton, CardSkeleton } from '@/components/ui/LoadingStates'
+import { PageWrapper } from '@/components/ui/PageWrapper'
 import type { DashboardMetrics, EntryResponse } from '@/types'
 
 // Icons for metrics cards
@@ -96,62 +97,55 @@ export default function DashboardPage() {
     success('Refreshing dashboard data...')
   }
 
+  const dashboardActions = (
+    <>
+      <Button
+        variant="outline"
+        size="md"
+        onClick={() => router.push('/import')}
+        className="flex items-center justify-center gap-2 flex-1 xs:flex-none"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <span className="hidden xs:inline">Import Data</span>
+        <span className="xs:hidden">Import</span>
+      </Button>
+      
+      <Button
+        variant="outline"
+        size="md"
+        onClick={handleViewReports}
+        className="flex items-center justify-center gap-2 flex-1 xs:flex-none"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span className="hidden xs:inline">View Reports</span>
+        <span className="xs:hidden">Reports</span>
+      </Button>
+      
+      <Button
+        variant="primary"
+        size="md"
+        onClick={handleAddEntry}
+        className="flex items-center justify-center gap-2 flex-1 xs:flex-none"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        <span className="hidden xs:inline">Add Entry</span>
+        <span className="xs:hidden">Add</span>
+      </Button>
+    </>
+  )
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="mb-8"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-neutral-900 mb-2">
-                Dashboard
-              </h1>
-              <p className="text-neutral-600">
-                Welcome back! Here&apos;s your financial overview for this month.
-              </p>
-            </div>
-            
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => router.push('/import')}
-                className="flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                Import Data
-              </Button>
-              
-              <Button
-                variant="outline"
-                onClick={handleViewReports}
-                className="flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                View Reports
-              </Button>
-              
-              <Button
-                variant="primary"
-                onClick={handleAddEntry}
-                className="flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Add Entry
-              </Button>
-            </div>
-          </div>
-        </motion.div>
+    <PageWrapper
+      title="Dashboard"
+      subtitle="Welcome back! Here's your financial overview for this month."
+      actions={dashboardActions}
+    >
 
         {/* Error States */}
         {(metricsError || entriesError) && (
@@ -198,7 +192,7 @@ export default function DashboardPage() {
         {metricsLoading ? (
           <MetricsSkeleton />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <MetricsCard
               title="Total Income"
               value={(metrics as DashboardMetrics)?.totalIncome || 0}
@@ -226,7 +220,7 @@ export default function DashboardPage() {
         )}
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Entries - Takes 2 columns on large screens */}
           <div className="lg:col-span-2">
             <ErrorBoundary
@@ -297,7 +291,6 @@ export default function DashboardPage() {
             </ErrorBoundary>
           </div>
         </div>
-      </div>
-    </div>
+    </PageWrapper>
   )
 }

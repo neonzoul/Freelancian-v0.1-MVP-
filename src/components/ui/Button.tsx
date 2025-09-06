@@ -18,15 +18,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         whileHover={disabled || loading ? undefined : "hover"}
         whileTap={disabled || loading ? undefined : "tap"}
         className={clsx(
-          'inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
+          'inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 touch-manipulation',
           {
-            'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500': variant === 'primary',
-            'bg-neutral-200 hover:bg-neutral-300 text-neutral-900 focus:ring-neutral-500': variant === 'secondary',
-            'border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-900 focus:ring-primary-500': variant === 'outline',
-            'hover:bg-neutral-100 text-neutral-700 focus:ring-neutral-500': variant === 'ghost',
-            'px-3 py-1.5 text-sm': size === 'sm',
-            'px-4 py-2 text-sm': size === 'md',
-            'px-6 py-3 text-base': size === 'lg',
+            'bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white focus:ring-primary-500': variant === 'primary',
+            'bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-900 focus:ring-neutral-500': variant === 'secondary',
+            'border border-neutral-300 bg-white hover:bg-neutral-50 active:bg-neutral-100 text-neutral-900 focus:ring-primary-500': variant === 'outline',
+            'hover:bg-neutral-100 active:bg-neutral-200 text-neutral-700 focus:ring-neutral-500': variant === 'ghost',
+            'px-3 py-2 text-sm min-h-[36px]': size === 'sm',
+            'px-4 py-2.5 text-sm min-h-[40px]': size === 'md',
+            'px-6 py-3 text-base min-h-[44px]': size === 'lg',
             'opacity-50 cursor-not-allowed': disabled || loading,
           },
           className
