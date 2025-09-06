@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { formatThb } from '@/lib/calculations'
+import { formatThb, calculateVat, calculateWithholding, TAX_RATES } from '@/lib/currency'
 
 interface TaxCalculationHelpersProps {
   grossAmount?: number
@@ -18,8 +18,8 @@ export function TaxCalculationHelpers({
   onVatToggle,
   onWhtToggle,
 }: TaxCalculationHelpersProps) {
-  const vatAmount = grossAmount ? grossAmount * 0.07 : 0
-  const whtAmount = grossAmount ? grossAmount * 0.03 : 0
+  const vatAmount = grossAmount ? calculateVat(grossAmount) : 0
+  const whtAmount = grossAmount ? calculateWithholding(grossAmount) : 0
 
   return (
     <AnimatePresence>
@@ -43,13 +43,13 @@ export function TaxCalculationHelpers({
             <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-100">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-neutral-900">VAT (7%)</span>
+                  <span className="font-medium text-neutral-900">VAT ({(TAX_RATES.VAT * 100).toFixed(0)}%)</span>
                   <span className="text-sm text-neutral-500">
                     {formatThb(vatAmount)}
                   </span>
                 </div>
                 <p className="text-xs text-neutral-600 mt-1">
-                  Automatically calculate 7% VAT from gross amount
+                  Automatically calculate {(TAX_RATES.VAT * 100).toFixed(0)}% VAT from gross amount
                 </p>
               </div>
               
@@ -75,13 +75,13 @@ export function TaxCalculationHelpers({
             <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-100">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-neutral-900">Withholding Tax (3%)</span>
+                  <span className="font-medium text-neutral-900">Withholding Tax ({(TAX_RATES.WITHHOLDING * 100).toFixed(0)}%)</span>
                   <span className="text-sm text-neutral-500">
                     {formatThb(whtAmount)}
                   </span>
                 </div>
                 <p className="text-xs text-neutral-600 mt-1">
-                  Automatically calculate 3% withholding tax from gross amount
+                  Automatically calculate {(TAX_RATES.WITHHOLDING * 100).toFixed(0)}% withholding tax from gross amount
                 </p>
               </div>
               

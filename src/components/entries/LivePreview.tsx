@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/Card'
-import { formatThb } from '@/lib/calculations'
+import { formatThb } from '@/lib/currency'
 import { CreateEntryInput } from '@/lib/validations'
 
 interface LivePreviewProps {

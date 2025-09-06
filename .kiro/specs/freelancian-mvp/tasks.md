@@ -62,6 +62,7 @@
   - _Requirements: 2.1, 3.1, 3.2, 3.4, 3.5_
 
 - [x] 5. Build reusable UI component library
+
   - Create base Button component with multiple variants and loading states
   - Implement Input components (text, number, date, select) with validation states
   - Build Card component with hover effects and animations
@@ -73,6 +74,7 @@
   - _Requirements: 7.3, 7.4, 7.5_
 
 - [x] 6. Implement dashboard page with metrics and recent entries
+
   - Create dashboard layout with hero section and metrics cards
   - Build MetricsCard component with animated counters
   - Implement RecentEntries component with entry cards and hover effects
@@ -84,11 +86,6 @@
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
 - [x] 7. Build manual entry form with split-screen layout and live preview
-
-
-
-
-
   - Create EntryForm component with split-screen layout (form left, preview right)
   - Implement form fields with React Hook Form and Zod validation
   - Build LivePreview component that updates in real-time
@@ -100,7 +97,7 @@
   - **Commit Pattern**: `feat-Kiro: Build manual entry form with live preview mode: Spec model: {model_name}`
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
 
-- [ ] 8. Implement Thai Baht currency handling and financial calculations
+- [x] 8. Implement Thai Baht currency handling and financial calculations
 
   - Create currency formatting utilities for Thai Baht display
   - Implement calculation functions for income and expense totals

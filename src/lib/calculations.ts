@@ -1,23 +1,16 @@
 import type { EntryKind, FinancialCalculation, TaxCalculationOptions } from '@/types/entry'
+import { 
+  formatThb, 
+  ensureCurrencyPrecision, 
+  roundCurrency, 
+  calculateVat, 
+  calculateWithholding,
+  validateWithholdingTax as validateWithholdingAmount,
+  TAX_RATES
+} from './currency'
 
-// Thai Baht formatting
-export function formatThb(amount: number | null | undefined): string {
-  if (amount === null || amount === undefined) return '฿0.00'
-  
-  return new Intl.NumberFormat('th-TH', {
-    style: 'currency',
-    currency: 'THB',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
-}
-
-// For SQLite compatibility, we work directly with numbers
-// but ensure proper precision for currency calculations
-export function ensureCurrencyPrecision(num: number | undefined): number | undefined {
-  if (num === undefined) return undefined
-  return Math.round(num * 100) / 100 // Round to 2 decimal places
-}
+// Re-export currency utilities for backward compatibility
+export { formatThb, ensureCurrencyPrecision, roundCurrency }
 
 // Calculate financial totals based on entry kind
 export function calculateTotalNet(
@@ -47,18 +40,18 @@ export function calculateTaxes(
   const {
     enableVat = true,
     enableWithholding = true,
-    vatRate = 0.07, // 7%
-    withholdingRate = 0.03, // 3%
+    vatRate = TAX_RATES.VAT, // 7%
+    withholdingRate = TAX_RATES.WITHHOLDING, // 3%
   } = options
 
-  const vat = enableVat ? priceGross * vatRate : 0
-  const withholding = enableWithholding ? priceGross * withholdingRate : 0
+  const vat = enableVat ? calculateVat(priceGross, vatRate) : 0
+  const withholding = enableWithholding ? calculateWithholding(priceGross, withholdingRate) : 0
   const commission = 0 // Default to 0, can be set manually
 
   return {
     priceGross,
-    vat: Math.round(vat * 100) / 100, // Round to 2 decimal places
-    withholding: Math.round(withholding * 100) / 100,
+    vat,
+    withholding,
     commission,
     totalNet: calculateTotalNet('income', priceGross, vat, withholding, commission),
   }
@@ -66,8 +59,13 @@ export function calculateTaxes(
 
 // Validate withholding tax doesn't exceed 3% of gross
 export function validateWithholdingTax(priceGross: number, withholding: number): boolean {
-  if (priceGross <= 0) return true
-  return withholding <= priceGross * 0.03
+  const validation = validateWithholdingAmount(priceGross, withholding)
+  return validation.isValid
+}
+
+// Enhanced withholding validation with detailed feedback
+export function validateWithholdingTaxDetailed(priceGross: number, withholding: number) {
+  return validateWithholdingAmount(priceGross, withholding)
 }
 
 // Calculate percentage change for trends
@@ -93,12 +91,7 @@ export function formatPercentageChange(percentage: number): {
   }
 }
 
-// Round to 2 decimal places for currency
-export function roundCurrency(amount: number): number {
-  return Math.round(amount * 100) / 100
-}
-
-// Validate financial amounts
+// Validate financial amounts (re-exported from currency utilities)
 export function validateFinancialAmount(amount: number): boolean {
   return !isNaN(amount) && isFinite(amount) && amount >= 0
 }
