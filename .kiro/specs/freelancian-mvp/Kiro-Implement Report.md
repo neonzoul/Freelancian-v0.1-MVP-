@@ -495,3 +495,124 @@ ask 9: Build comprehensive entry list page with filtering and search
 - `src/components/ui/ComponentShowcase.tsx` (modified) - Updated imports and usage
 - `src/components/ui/CurrencyInput.tsx` (modified) - Fixed type conflicts
 - `package.json` (modified) - Added @heroicons/react and sonner dependencies
+## Task 
+10: Implement reports page with charts and trend analysis
+
+**Date:** December 9, 2024  
+**Duration:** ~3 hours  
+**Model:** Claude 3.5 Sonnet  
+
+### Implemented Details
+
+#### Core Components Created:
+1. **Reports Page** (`src/app/reports/page.tsx`)
+   - Clean page layout with navigation back to dashboard
+   - Period selector integration
+   - Error handling with user-friendly messages
+   - Responsive design with proper spacing and animations
+
+2. **PeriodSelector Component** (`src/components/reports/PeriodSelector.tsx`)
+   - Interactive period selection (3, 6, 12, 24 months)
+   - Smooth transition animations between selections
+   - Tooltip descriptions for each period option
+   - Clean card-based layout with hover effects
+
+3. **SummaryStats Component** (`src/components/reports/SummaryStats.tsx`)
+   - Four key metrics: Average Income, Average Expenses, Average Net, Total Entries
+   - Trend indicators with percentage changes and color-coded arrows
+   - Animated counters and smooth transitions
+   - Responsive grid layout for mobile devices
+   - Empty state handling for no data scenarios
+
+4. **MonthlyChart Component** (`src/components/reports/MonthlyChart.tsx`)
+   - Recharts integration with ComposedChart (Area + Bar + Line)
+   - Income displayed as filled area chart with gradient
+   - Expenses shown as red bars
+   - Net amount as dashed line overlay
+   - Custom tooltip with detailed financial breakdown
+   - Smooth animations with staggered delays
+   - Chart insights showing highest income, expenses, and latest net
+   - Empty state with helpful messaging
+
+5. **Reports Hook** (`src/lib/hooks/use-reports.ts`)
+   - React Query integration for trends API
+   - Proper TypeScript typing with `TrendsResponse`
+   - Caching strategy (5min stale, 10min garbage collection)
+   - Error handling and retry logic
+
+### Chart Implementation
+
+#### Recharts Configuration:
+- **ComposedChart**: Combined area, bar, and line charts for comprehensive view
+- **Custom Tooltip**: Rich tooltip showing all financial metrics with proper formatting
+- **Gradients**: Beautiful gradient fills for income area chart
+- **Animations**: Staggered animations (1500ms area, 1200ms bars, 1000ms line)
+- **Responsive Design**: ResponsiveContainer for proper scaling
+- **Thai Baht Formatting**: Proper currency formatting throughout
+
+#### Animation Details:
+- **Page Transitions**: Framer Motion page-level animations with staggered delays
+- **Component Animations**: Individual component animations (scale, fade, slide)
+- **Chart Animations**: Built-in Recharts animations with custom timing
+- **Hover Effects**: Smooth hover transitions on interactive elements
+- **Loading States**: Skeleton loading animations for better perceived performance
+
+### Trend Calculation Logic
+
+#### Percentage Change Calculations:
+- **Month-over-Month**: Compares latest month vs previous month
+- **Color Coding**: Green for positive trends, red for negative trends
+- **Trend Indicators**: Arrow icons showing direction of change
+- **Safe Division**: Handles zero division cases properly
+- **Rounding**: Proper decimal rounding for display
+
+#### Data Processing:
+- **API Integration**: Uses existing `/api/reports/trends` endpoint
+- **Data Transformation**: Formats month strings for chart display
+- **Summary Statistics**: Calculates averages across selected period
+- **Empty State Handling**: Graceful handling of no data scenarios
+
+### Challenges & Solutions
+
+#### Challenge 1: TypeScript Typing Issues
+- **Problem**: React Query hook not properly typed, causing TypeScript errors
+- **Solution**: Added explicit generic typing `useQuery<TrendsResponse>` and updated to newer React Query API (`gcTime` instead of `cacheTime`)
+
+#### Challenge 2: Chart Data Formatting
+- **Problem**: Month strings from API needed formatting for display
+- **Solution**: Transformed "2024-01" format to "Jan 2024" using JavaScript Date formatting
+
+#### Challenge 3: Complex Chart Composition
+- **Problem**: Combining multiple chart types (area, bar, line) in single view
+- **Solution**: Used Recharts ComposedChart with proper layering and custom styling
+
+#### Challenge 4: Responsive Design
+- **Problem**: Charts and stats needed to work on mobile devices
+- **Solution**: Implemented responsive grid layouts and proper breakpoints
+
+### Results and Verification
+
+#### Functionality Verified:
+✅ **Period Selection**: All period options (3, 6, 12, 24 months) work correctly  
+✅ **Chart Rendering**: Charts display properly with real data from API  
+✅ **Animations**: Smooth animations throughout the interface  
+✅ **Responsive Design**: Works on mobile and desktop  
+✅ **Error Handling**: Proper error states and loading indicators  
+✅ **Navigation**: Seamless navigation between dashboard and reports  
+✅ **Data Accuracy**: Chart data matches API responses  
+✅ **Performance**: Fast loading with proper caching  
+
+#### API Integration:
+- Successfully integrated with existing `/api/reports/trends` endpoint
+- Proper query parameter handling for different time periods
+- Percentage change calculations working correctly
+- Summary statistics displaying accurate averages
+
+#### User Experience:
+- Intuitive period selection with visual feedback
+- Rich tooltips providing detailed information on hover
+- Smooth transitions between different time periods
+- Clear visual hierarchy and information architecture
+- Accessible design with proper ARIA labels and semantic HTML
+
+The reports page now provides comprehensive financial analysis with beautiful charts and trend indicators, meeting all requirements for Requirements 3.1-3.5.

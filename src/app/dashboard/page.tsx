@@ -54,8 +54,7 @@ export default function DashboardPage() {
   }
 
   const handleViewReports = () => {
-    // TODO: Navigate to reports page
-    console.log('View reports')
+    router.push('/reports')
   }
 
   return (
